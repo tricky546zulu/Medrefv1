@@ -1,65 +1,69 @@
-// Define a name for the cache
-const CACHE_NAME = 'paramedic-guide-cache-v1';
+// Define a new name for the cache to force an update
+const CACHE_NAME = 'paramedic-guide-cache-v2';
 
-// List of files to cache when the service worker is installed.
-// This includes the main HTML file and critical external resources.
+// List of files to cache. This list is more comprehensive to ensure all assets are available offline.
 const urlsToCache = [
-  '/',
-  '/index.html',
+  './', // Caches the root URL
+  './index.html',
+  './manifest.json',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
 ];
 
 // Install event: opens the cache and adds the core files to it.
 self.addEventListener('install', event => {
-  console.log('Service Worker: Installing...');
+  console.log('Service Worker: Installing new version...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Service Worker: Caching app shell');
+        // Use addAll to ensure all assets are cached. If one fails, the entire install fails.
         return cache.addAll(urlsToCache);
       })
       .then(() => self.skipWaiting()) // Activate the new service worker immediately
   );
 });
 
-// Activate event: cleans up old caches.
+// Activate event: this is where we clean up old caches.
 self.addEventListener('activate', event => {
-  console.log('Service Worker: Activating...');
+  console.log('Service Worker: Activating new version...');
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map(cache => {
-          if (cache !== CACHE_NAME) {
-            console.log('Service Worker: Clearing old cache');
-            return caches.delete(cache);
-          }
+        // Delete any caches that are not our current one
+        cacheNames.filter(cacheName => cacheName !== CACHE_NAME).map(cacheName => {
+          console.log('Service Worker: Deleting old cache:', cacheName);
+          return caches.delete(cacheName);
         })
       );
-    })
+    }).then(() => self.clients.claim()) // Take control of all open clients
   );
-  return self.clients.claim(); // Take control of all open clients
 });
 
-// Fetch event: serves assets from cache first.
-// If the resource isn't in the cache, it fetches it from the network.
+// Fetch event: serves assets from cache first (cache-first strategy).
 self.addEventListener('fetch', event => {
-  console.log('Service Worker: Fetching ', event.request.url);
+  // We only want to handle GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // If the request is in the cache, return the cached version
-        if (response) {
-          return response;
-        }
-        // Otherwise, fetch the request from the network
-        return fetch(event.request);
-      })
-      .catch(error => {
-        // This is a simplified offline fallback. 
-        // For a more robust app, you might want a custom offline page.
-        console.log('Fetch failed; returning offline page instead.', error);
-      })
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.match(event.request).then(response => {
+        // Return the cached response if it exists.
+        // Otherwise, fetch from the network, cache it, and then return the network response.
+        const fetchPromise = fetch(event.request).then(networkResponse => {
+          // Check if we received a valid response
+          if (networkResponse && networkResponse.status === 200) {
+            cache.put(event.request, networkResponse.clone());
+          }
+          return networkResponse;
+        });
+
+        // Return the cached response immediately if found, otherwise wait for the network.
+        return response || fetchPromise;
+      });
+    })
   );
 });
 
