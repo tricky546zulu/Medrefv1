@@ -546,27 +546,14 @@
         const noResultsContainer = document.getElementById('noResults');
         const azNavContainer = document.getElementById('az-nav');
         
-        function renderMedications(filter = '') {
+        function renderMedications(medsToRender) {
             medicationListContainer.innerHTML = '';
-            const searchTerm = filter.toLowerCase().trim();
-            const filteredMeds = medications.filter(med => 
-                Object.values(med).some(value => {
-                    if (typeof value === 'object' && value !== null) {
-                        return Object.entries(value).some(([key, val]) => 
-                            String(val).toLowerCase().includes(searchTerm)
-                        );
-                    }
-                    return String(value).toLowerCase().includes(searchTerm);
-                })
-            );
 
-            if (filteredMeds.length === 0 && searchTerm.length > 0) {
+            if (medsToRender.length === 0 && searchInput.value.length > 0) {
                 noResultsContainer.classList.remove('hidden');
             } else {
                 noResultsContainer.classList.add('hidden');
                 
-                const medsToRender = searchTerm.length > 0 ? filteredMeds : medications;
-
                 const groupedMeds = medsToRender.reduce((acc, med) => {
                     const firstLetter = med.name.charAt(0).toUpperCase();
                     if (!acc[firstLetter]) acc[firstLetter] = [];
@@ -574,18 +561,21 @@
                     return acc;
                 }, {});
 
+                const fragment = document.createDocumentFragment();
+
                 Object.keys(groupedMeds).sort().forEach(letter => {
                     const heading = document.createElement('div');
                     heading.id = `letter-${letter}`;
                     heading.className = 'pt-4';
                     heading.innerHTML = `<h2 class="text-xl font-bold text-cyan-400 border-b border-slate-700 pb-2 mb-3">${letter}</h2>`;
-                    medicationListContainer.appendChild(heading);
+                    fragment.appendChild(heading);
                     
                     groupedMeds[letter].forEach(med => {
                         const card = createMedicationCard(med);
-                        medicationListContainer.appendChild(card);
+                        fragment.appendChild(card);
                     });
                 });
+                medicationListContainer.appendChild(fragment);
             }
         }
 
@@ -649,10 +639,9 @@
         }
 
         function generateAzNav() {
-            // Get a unique, sorted list of the first letter of each medication.
             const availableLetters = [...new Set(medications.map(med => med.name.charAt(0).toUpperCase()))].sort();
             
-            azNavContainer.innerHTML = ''; // Clear previous nav elements
+            azNavContainer.innerHTML = '';
             
             availableLetters.forEach(letter => {
                 const button = document.createElement('button');
@@ -668,10 +657,39 @@
             azNavWrapper.style.top = `${headerHeight}px`;
         }
 
-        // --- EVENT LISTENERS ---
-        searchInput.addEventListener('input', (e) => {
-            renderMedications(e.target.value);
-        });
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        const debouncedRender = debounce(filterAndRender, 250);
+        searchInput.addEventListener('input', debouncedRender);
+
+        function filterAndRender() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            if (searchTerm === '') {
+                renderMedications(medications);
+                return;
+            }
+            const filteredMeds = medications.filter(med =>
+                Object.values(med).some(value => {
+                    if (typeof value === 'object' && value !== null) {
+                        return Object.entries(value).some(([key, val]) =>
+                            String(val).toLowerCase().includes(searchTerm)
+                        );
+                    }
+                    return String(value).toLowerCase().includes(searchTerm);
+                })
+            );
+            renderMedications(filteredMeds);
+        }
 
         medicationListContainer.addEventListener('click', (e) => {
             const header = e.target.closest('.accordion-header');
@@ -684,7 +702,6 @@
         });
         
         azNavContainer.addEventListener('click', (e) => {
-            // Check if a button inside the nav container was clicked
             const navButton = e.target.closest('button');
             if (navButton) {
                 const targetId = navButton.dataset.target;
@@ -699,12 +716,13 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderMedications();
+            renderMedications(medications);
             generateAzNav();
             setAzNavPosition();
         });
 
-        window.addEventListener('resize', setAzNavPosition);
+        const debouncedSetAzNavPosition = debounce(setAzNavPosition, 100);
+        window.addEventListener('resize', debouncedSetAzNavPosition);
 
     </script>
 </body>
