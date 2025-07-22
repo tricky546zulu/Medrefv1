@@ -300,6 +300,21 @@
                 }, 
                 route: 'IM, IV, IO, Nebulized, ET, Auto-Injector (EMR only).' 
             },
+            {
+                name: 'EPINEPHrine Infusion (Adult)',
+                alert: 'HIGH ALERT',
+                indications: 'Symptomatic bradycardia, Cardiogenic shock, Improve BP to facilitate mechanical capture during transcutaneous pacing (TCP)',
+                contraindications: "Hypersensitivity unless it's a life-threatening condition.",
+                preparation: 'Add 4 mg (4 ml or 4 ampules) of epinephrine to 250 ml D5W. This creates a concentration of 16 mcg/ml. Mix gently.',
+                dosing: {
+                    'Route': 'IV/IO pump infusion',
+                    'Starting Dose': '0.1 mcg/kg/min',
+                    'Titration': 'Increase by 0.1 mcg/kg/min every 3-5 minutes as needed.'
+                },
+                administration: 'Attach pump tubing to the most distal Y-site of a steady flowing IV/IO.',
+                notes: 'Incompatible with sodium bicarbonate.',
+                monitoring: 'Continuous ECG and SpO2 monitoring. Check blood pressure every 3 to 5 minutes. Check vital signs every 15-30 minutes.'
+            },
             { 
                 name: 'FentaNYL', 
                 indications: 'Moderate to severe pain', 
