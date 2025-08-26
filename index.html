@@ -1,786 +1,1 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paramedic Medication Field Guide</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Custom Styles -->
-    <style>
-        body {
-            background-color: #0B1120; /* Darker, richer navy */
-            color: #94a3b8; /* Lighter slate for better contrast */
-            font-family: 'Inter', sans-serif;
-        }
-        .sticky-header {
-            position: sticky; top: 0; z-index: 50;
-            background-color: rgba(11, 17, 32, 0.9); /* Slightly more opaque background */
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid #1e293b;
-        }
-        .accordion-content {
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .accordion-content.open { 
-            max-height: 2000px; /* Increased max-height for long content */
-        }
-        .accordion-header svg.chevron { 
-            transition: transform 0.3s ease-in-out; 
-        }
-        .accordion-header[aria-expanded="true"] svg.chevron { 
-            transform: rotate(180deg); 
-        }
-        
-        /* A-Z Nav scrollbar styling */
-        #az-nav {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
-        }
-        #az-nav::-webkit-scrollbar { 
-            display: none; /* Chrome, Safari, etc. */
-        }
-
-        /* Focus ring styling */
-        .focus-ring {
-            --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-            box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow);
-            outline: 2px solid transparent;
-            outline-offset: 2px;
-        }
-        .focus-ring:focus-visible {
-             --tw-ring-color: rgb(34 211 238 / .7);
-        }
-
-    </style>
-</head>
-<body class="bg-slate-900 text-slate-400">
-
-    <!-- Main Container -->
-    <div class="container mx-auto max-w-5xl">
-
-        <!-- Header -->
-        <header id="main-header" class="sticky-header">
-            <div class="px-4 pt-4 pb-3 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between gap-4">
-                     <div class="flex items-center gap-3">
-                         <div class="flex-shrink-0 bg-cyan-500/10 p-2 rounded-lg">
-                            <svg class="h-6 w-6 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18.0002 22.0002H6.00024C5.44795 22.0002 5.00024 21.5525 5.00024 21.0002V3.00024C5.00024 2.44795 5.44795 2.00024 6.00024 2.00024H18.0002C18.5525 2.00024 19.0002 2.44795 19.0002 3.00024V21.0002C19.0002 21.5525 18.5525 22.0002 18.0002 22.0002ZM11.0002 12.0002V15.0002H8.00024V17.0002H11.0002V20.0002H13.0002V17.0002H16.0002V15.0002H13.0002V12.0002H11.0002ZM7.00024 4.00024V9.00024H17.0002V4.00024H7.00024Z"></path>
-                            </svg>
-                        </div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-100 tracking-tight">Paramedic Field Guide</h1>
-                    </div>
-                     <a href="https://collegeofparamedics.sk.ca/professional-practice/protocol-manuals/" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 text-xs bg-cyan-500/10 text-cyan-400 font-semibold py-2 px-3 rounded-lg hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors">
-                        SCoP Protocols
-                    </a>
-                </div>
-                
-                <!-- Search Input -->
-                <div class="mt-4 relative">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                        <svg class="h-5 w-5 text-slate-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <input type="text" id="searchInput" placeholder="Search medications..." class="focus-ring block w-full rounded-lg border-0 bg-slate-800 py-3 pl-11 pr-4 text-slate-200 ring-1 ring-inset ring-slate-700 placeholder:text-slate-500 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6">
-                </div>
-            </div>
-        </header>
-
-        <!-- Contact Info -->
-        <div class="px-4 sm:px-6 lg:px-8 py-3 border-b border-slate-800">
-            <p class="text-center text-sm text-slate-400">
-                For any questions, please contact: <a href="mailto:sean546mc@proton.me" class="font-medium text-cyan-400 hover:text-cyan-300">sean546mc@proton.me</a>
-            </p>
-        </div>
-
-        <!-- A-Z Quick Navigation -->
-        <nav id="az-nav-sticky-wrapper" class="bg-slate-800/70 shadow-sm backdrop-blur-lg sticky z-40">
-            <div id="az-nav" class="flex flex-nowrap justify-start sm:justify-center overflow-x-auto px-4 sm:px-6 lg:px-8 py-2 gap-x-1">
-                <!-- A-Z buttons will be generated here by JS -->
-            </div>
-        </nav>
-
-        <!-- Medication List -->
-        <main id="medicationList" class="p-4 sm:p-6 lg:p-8 space-y-3">
-            <!-- Medication cards will be injected here -->
-        </main>
-
-        <!-- No Results Message -->
-        <div id="noResults" class="hidden text-center py-16 px-6">
-            <svg class="mx-auto h-12 w-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
-            <h3 class="mt-4 text-lg font-semibold text-slate-200">No Medications Found</h3>
-            <p class="mt-1 text-sm text-slate-400">Your search did not match any medications. Please try again.</p>
-        </div>
-
-    </div>
-
-    <!-- Footer with Disclaimer -->
-    <footer class="border-t border-slate-800 mt-12">
-        <div class="container mx-auto max-w-5xl py-8 px-4 sm:px-6 lg:px-8 text-center text-slate-500">
-            <h4 class="font-semibold text-slate-400 mb-2">Legal Disclaimer</h4>
-            <p class="text-xs max-w-3xl mx-auto leading-relaxed">
-                This guide is intended for rapid reference and educational purposes only. It is not a substitute for the official Saskatchewan College of Paramedics (SCoP) Clinical Practice Protocols, medical direction, or professional clinical judgment. The user assumes full responsibility for the accurate administration of any medication. Always refer to the most current official protocols and consult with medical control as required. The developers of this tool are not liable for any errors, omissions, or for any outcomes resulting from the use of this information.
-            </p>
-        </div>
-    </footer>
-
-    <!-- Embedded JavaScript -->
-    <script>
-        // --- DATA STORE ---
-        const medications = [
-            { 
-                name: 'Acetaminophen', 
-                indications: 'Severe sepsis/septic shock (adult), Pyrexic child/adult, Pain control', 
-                contraindications: 'Hypersensitivity, Acetaminophen-induced liver disease', 
-                dosing: {
-                    'Adult': 'Oral: 1 g every 6 hours. Rectal: 325 to 650 mg every 4 to 6 hours.',
-                    'Elderly (≥75 years)': 'Oral: 500-1000 mg every 6 hours.',
-                    'Pediatric': 'Oral/Rectal: 10 to 15 mg/kg every 4 to 6 hours (max 75mg/kg/24h, or 4g/24h).'
-                }, 
-                route: 'EMR: PO; PCP/ICP/ACP: PO/PR.' 
-            },
-            { 
-                name: 'Acetylsalicylic Acid (ASA)', 
-                indications: 'Ischemic chest pain', 
-                contraindications: 'Hypersensitivity to ASA/NSAIDs, active ulcer disease (relative)', 
-                dosing: {
-                    'Adult/Elderly - Ischemic Chest Pain': '160 mg, uncoated, chewed and swallowed.'
-                }, 
-                route: 'EMR/PCP/ICP/ACP: Chew and swallow.' 
-            },
-            { 
-                name: 'Activated Charcoal', 
-                indications: 'Treatment of most oral poisonings (except corrosives, iron, lithium, etc.)', 
-                contraindications: 'Ingestion of corrosive agents, unprotected airway, GI tract not intact', 
-                dosing: {
-                    'Adult/Elderly - Oral Poisoning': '50 grams PO.',
-                    'Pediatric - Oral Poisoning': 'Contact PADIS (1 g/kg).'
-                }, 
-                route: 'EMR/PCP/ICP/ACP: Oral.' 
-            },
-            { 
-                name: 'Adenosine',
-                indications: 'Conversion of paroxysmal supraventricular tachycardia (PSVT) to sinus rhythm', 
-                contraindications: '2nd or 3rd degree AV block, sick sinus syndrome, symptomatic bradycardia (unless pacemaker present)', 
-                dosing: {
-                    'Adult - PSVT': '1st dose: 6 mg IV over 1-2s w/ rapid 20mL flush. 2nd dose: 12 mg IV over 1-2s w/ rapid 20mL flush if needed.',
-                    'Pediatric - PSVT': '1st dose: 0.1 mg/kg IV (max 6 mg). 2nd dose: 0.2 mg/kg IV (max 12 mg) if needed.',
-                    'Special Populations': 'Reduce initial dose to 3mg for patients on carbamazepine/dipyridamole or with central line. Reduce to 1mg for heart transplant patients.'
-                }, 
-                route: 'ACP: IV, IO, CVL.' 
-            },
-            { 
-                name: 'Amiodarone', 
-                indications: 'Life-threatening recurring VFib and hemodynamically unstable VT', 
-                contraindications: 'Hypersensitivity, marked sinus bradycardia, cardiogenic shock, 2nd or 3rd degree AV block (unless pacemaker present)', 
-                dosing: {
-                    'Adult - VF/Pulseless VT': '300 mg IV bolus, repeat 150 mg.',
-                    'Adult - VT with Pulse': '150 mg in 100 mL D5W infused IV over 10 minutes, repeat q10 min PRN.',
-                    'Pediatric - VF/Pulseless VT': '5 mg/kg IV bolus (max 300 mg/dose). May repeat twice.',
-                    'Pediatric - VT with Pulse': '150 mg in 100 mL D5W infused IV over 60 min.'
-                }, 
-                route: 'ACP: IV, IO, CVAD, IVAD.' 
-            },
-            { 
-                name: 'Atropine', 
-                indications: 'Symptomatic Bradycardia, Antidote for organophosphate poisoning', 
-                contraindications: 'Hypersensitivity, narrow-angle glaucoma, myasthenia gravis (no contraindications in life-threatening poisoning)', 
-                dosing: {
-                    'Adult - Symptomatic Bradycardia': '1 mg IV every 3-5 min (max 3 mg).',
-                    'Pediatric - Symptomatic Bradycardia': '0.02 mg/kg IV (max single dose 0.5 mg).',
-                    'Adult - Organophosphate Poisoning': '1 to 2 mg; repeat every 5 to 60 minutes as needed. Severe cases: 2 to 6 mg initially.',
-                    'Pediatric - Organophosphate Poisoning': '<12 years: 0.05 mg/kg IV initially, then double dose q5 min. ≥12 years: 1 mg IV initially, then double dose q5 min.'
-                }, 
-                route: 'ACP: IV, IO, ET.' 
-            },
-            { 
-                name: 'Calcium Chloride', 
-                indications: 'Treatment of hypocalcemia (e.g., cardiac arrest with hyperkalemia), sine wave pattern ECG, Beta-blocker/Calcium channel blocker overdose', 
-                contraindications: 'Hypersensitivity, hypercalcemia, severe renal disease', 
-                dosing: {
-                    'Cardiac Arrest / Hyperkalemia': '500 to 1000 mg IV over 2 to 5 minutes, may repeat.',
-                    'Beta-Blocker / CCB Overdose': 'Contact PADIS. Initial: 1000-2000 mg over 5 min.'
-                }, 
-                route: 'ACP: IV, IO, CVL.' 
-            },
-            { 
-                name: 'CefTRIAXone', 
-                indications: 'Infections (lower respiratory, urinary tract, etc.) with >45 min delay to hospital', 
-                contraindications: 'Hypersensitivity to cephalosporins, do not administer with IV calcium-containing solutions', 
-                dosing: {
-                    'Adult/Elderly': '2 g IV over 5 minutes or infused over 20 minutes.'
-                }, 
-                route: 'ACP: IV/IO.' 
-            },
-            {
-                name: 'Methoxyflurane (Penthrox)',
-                indications: 'Pain secondary to acute trauma, Pain associated with medical procedures',
-                contraindications: [
-                    'Cardiac instability or respiratory depression',
-                    'Hypersensitivity',
-                    'Established diagnosis of malignant hyperthermia',
-                    'Consciousness (e.g., altered)',
-                    'Kidneys (signs of renal failure or impairment)',
-                    'Age < 18 years old',
-                    'Lung or respiratory impairment',
-                    'Liver impairment of CYP450 inducers',
-                    'Last administration (> 6 ml/2 days, 15 ml/7 days or consecutive days)'
-                ],
-                dosing: {
-                    'Analgesia': '3 ml q 20 min PRN to MAX of 6 ml',
-                },
-                route: 'INH'
-            },
-            { 
-                name: 'Dexamethasone', 
-                indications: 'Pediatric croup (adjunctive treatment)', 
-                contraindications: 'Hypersensitivity, systemic fungal infections, live virus vaccines', 
-                dosing: {
-                    'Pediatric - Croup': '0.6 mg/kg PO to a max of 16 mg.'
-                }, 
-                route: 'ACP: PO.' 
-            },
-            { 
-                name: 'Dextrose (D10/D25/D50)', 
-                indications: 'Treatment of insulin hypoglycemia', 
-                contraindications: 'Hypersensitivity to corn, diabetic coma while hyperglycemic, intracranial hemorrhage', 
-                dosing: {
-                    'Adult - Hypoglycemia': '12.5 to 25 grams D10W IV over 1 to 5 minutes. Repeat as required.',
-                    'Pediatric - Hypoglycemia': '2 to 4 mL/kg D25W IV over 2 to 5 minutes. Repeat as required.',
-                    'Neonate - Hypoglycemia': '5 to 10 mL/kg D10W IV over 2 to 5 minutes. Repeat as required.'
-                }, 
-                route: 'EMR: Oral Glucose; PCP/ICP/ACP: PO/IV/IO.' 
-            },
-            { 
-                name: 'DimenhyDRINATE (Gravol)', 
-                indications: 'Nausea, vomiting, vertigo', 
-                contraindications: 'Hypersensitivity, concurrent MAOI use, narrow-angle glaucoma, neonates', 
-                dosing: {
-                    'Adult': '25 to 50 mg IV/IM every 4 hours PRN.',
-                    'Elderly': '12.5 mg IV/IM every 4 hours PRN.',
-                    'Pediatric (<12 years)': '1 mg/kg (max 50 mg) IV/IM every 4-6 hours PRN.'
-                }, 
-                route: 'PCP/ICP/ACP: SC/IM/IV.' 
-            },
-            { 
-                name: 'DiphenhydrAMINE (Benadryl)', 
-                indications: 'Allergic symptoms, adjunct in anaphylaxis', 
-                contraindications: 'Hypersensitivity', 
-                dosing: {
-                    'Adult/Pediatric': '1 mg/kg IV infusion or IM (max 50 mg). Recommended daily max: 400mg (Adult), 300mg (Peds).'
-                }, 
-                route: 'ACP: IM/IV.' 
-            },
-            { 
-                name: 'Entonox (Nitrous Oxide)', 
-                indications: 'Pain (musculoskeletal, cardiac, burns), active labour', 
-                contraindications: 'Head injury with impaired consciousness, inebriation, severe facial injuries, chest trauma (pneumothorax)', 
-                dosing: {
-                    'All Patients': 'Self-administered via inhalation until pain is relieved.'
-                }, 
-                route: 'PCP/ICP/ACP: Deep inhalation.' 
-            },
-            { 
-                name: 'EPINEPHrine', 
-                indications: 'Anaphylaxis, asthmatic attacks, cardiac arrest, croup, profound bradycardia/hypotension, push dose pressor.', 
-                contraindications: 'No absolute contraindications in life-threatening conditions. Hypersensitivity to sulfites.', 
-                dosing: {
-                    'Adult - Anaphylaxis (Normotensive)': 'IM: 0.5 mg (1:1000) every 5-15 min PRN (max 3 doses).',
-                    'Adult - Anaphylaxis (Hypotensive)': 'IV: 100 mcg (10 mL of 1:100,000) over 5-10 min, repeat q5 min PRN.',
-                    'Adult - Cardiac Arrest': 'IV/IO Push: 1 mg (1:10,000) every 3-5 min. ETT: 3 mg.',
-                    'Adult - Push Dose Pressor': '5-50 mcg (0.5-5 mL of 1:100,000) IVP every 2-5 min.',
-                    'Pediatric - Anaphylaxis': 'IM: 0.01 mg/kg (1:1000) (max 0.5 mg/dose), max 3 doses.',
-                    'Pediatric - Cardiac Arrest': 'IV/IO Push: 0.01 mg/kg (0.1 mL/kg of 1:10,000) every 3-5 min (max 1 mg/dose). ETT: 0.1 mg/kg (0.1 mL/kg of 1:1000).',
-                    'Pediatric - Croup (Nebulized)': '<5 kg: 0.5 mg/kg (1:1000) (max 2.5 mg). >5 kg: 2.5 to 5 mg (1:1000).',
-                    'EMR Auto-Injector': 'Adult: 0.3 mg. Peds: 0.15 mg. Repeat in 5 min if needed.'
-                }, 
-                route: 'IM, IV, IO, Nebulized, ET, Auto-Injector (EMR only).' 
-            },
-            {
-                name: 'EPINEPHrine Infusion (Adult)',
-                alert: 'HIGH ALERT',
-                indications: 'Symptomatic bradycardia, Cardiogenic shock, Improve BP to facilitate mechanical capture during transcutaneous pacing (TCP)',
-                contraindications: "Hypersensitivity unless it's a life-threatening condition.",
-                preparation: 'Add 4 mg (4 ml or 4 ampules) of epinephrine to 250 ml D5W. This creates a concentration of 16 mcg/ml. Mix gently.',
-                dosing: {
-                    'Route': 'IV/IO pump infusion',
-                    'Starting Dose': '0.1 mcg/kg/min',
-                    'Titration': 'Increase by 0.1 mcg/kg/min every 3-5 minutes as needed.'
-                },
-                route: 'ACP Infusion',
-                administration: 'Attach pump tubing to the most distal Y-site of a steady flowing IV/IO.',
-                notes: 'Incompatible with sodium bicarbonate.',
-                monitoring: 'Continuous ECG and SpO2 monitoring. Check blood pressure every 3 to 5 minutes. Check vital signs every 15-30 minutes.'
-            },
-            { 
-                name: 'FentaNYL', 
-                indications: 'Moderate to severe pain', 
-                contraindications: 'Hypersensitivity', 
-                dosing: {
-                    'Adult - Pain': '0.5 to 2 mcg/kg IV over 1-3 min or IM/IN every 10 min PRN.',
-                    'Elderly - Pain': '0.5 to 1 mcg/kg IV/IM/IN, repeat 0.25-0.5 mcg/kg q10 min PRN.',
-                    'Pediatric - Pain': '0.5 to 2 mcg/kg IV over 3-5 min or IM q10 min PRN; or 1.5-2 mcg/kg IN.'
-                }, 
-                route: 'ACP: IV, IO, IN, IM, SC.' 
-            },
-            { 
-                name: 'Glucagon', 
-                indications: 'Severe hypoglycemia in patients <4 years or with basal skull fracture without IV access', 
-                contraindications: 'Hypersensitivity, Pheochromocytoma', 
-                dosing: {
-                    'Adult/Peds >12yrs': '1 mg IM/SC. May repeat in 15 min.',
-                    'Peds <12yrs': '0.1 mg/kg (max 1mg) IM/SC. May repeat in 15 min.',
-                    'Neonate': '0.2 mg/kg (max 1mg) IM/SC.'
-                }, 
-                route: 'PCP/ICP/ACP: IM/SC/IV.' 
-            },
-            { 
-                name: 'Haloperidol', 
-                indications: 'Acute delirium (IM use only)', 
-                contraindications: 'Hypersensitivity, severe CNS depression, Parkinson\'s syndrome', 
-                dosing: {
-                    'Adult (>12 yrs)': '2.5 to 5 mg IM.',
-                    'Elderly/Debilitated': '1 to 2.5 mg IM.'
-                }, 
-                route: 'ACP: IM, SC, IV.' 
-            },
-            { 
-                name: 'HYDROmorphone', 
-                indications: 'Pain management and breathlessness in palliative patients already taking it', 
-                contraindications: 'Hypersensitivity', 
-                dosing: {
-                    'Palliative Use Only': 'Dose varies based on patient\'s existing prescription.'
-                }, 
-                route: 'ACP: PO/Subcut/IV.' 
-            },
-            { 
-                name: 'Ibuprofen', 
-                indications: 'Mild to moderate pain, fever (for patients <50 kg)', 
-                contraindications: 'Hypersensitivity to NSAIDs, active GI bleeding, 3rd trimester pregnancy', 
-                dosing: {
-                    'Pediatric (6mo-12yr, <50kg)': '10 mg/kg PO every 6-8 hrs.'
-                }, 
-                route: 'EMR/PCP/ICP/ACP: PO.' 
-            },
-            { 
-                name: 'Ipratropium', 
-                indications: 'Bronchospasm (COPD/Asthma exacerbation)', 
-                contraindications: 'Hypersensitivity to ipratropium or atropine', 
-                dosing: {
-                    'Adult - Nebulized': '250 to 500 mcg.',
-                    'Adult - MDI': '5 puffs (20 mcg/puff).',
-                    'Pediatric - Nebulized': '125 to 250 mcg.',
-                    'Pediatric - MDI (>20kg)': '5 puffs.',
-                    'Pediatric - MDI (<20kg)': '4 puffs.'
-                }, 
-                route: 'PCP/ICP/ACP: Inhalation/Nebulized/ETT.' 
-            },
-            { 
-                name: 'Ketamine', 
-                indications: 'Dissociative sedation, secondary for severe pain/agitation, anesthesia', 
-                contraindications: 'Conditions where significant BP elevation is hazardous (e.g., uncontrolled hypertension)', 
-                dosing: {
-                    'Adult/Pediatric - Pain': '0.1 to 0.3 mg/kg IV over >1 min (repeat q10 min) OR 1 mg/kg IN.',
-                    'Adult - Severe Agitation': '3 to 4 mg/kg IM.'
-                }, 
-                route: 'ACP: IM/IN/IV/IO.' 
-            },
-            { 
-                name: 'Ketorolac', 
-                indications: 'Short-term management of moderate to severe pain (IM/IV for patients unable to take oral NSAID)', 
-                contraindications: 'Hypersensitivity to NSAIDs, active peptic ulcer, renal disease, perioperative pain in CABG', 
-                dosing: {
-                    'Adult (<65yrs)': '10-15 mg IM/IV over >15s, then q4-6h. Max 120mg/day.',
-                    'Adult (>65yrs or <50kg)': '10-15 mg IM/IV over >15s, then lowest effective dose q4-6h. Max 60mg/day.',
-                    'Pediatric (2-16yrs)': '0.2-0.5 mg/kg IM/IV over 1-5 min q6-8h. Max 10mg q6h.'
-                }, 
-                route: 'PCP/ICP/ACP: IM/IV.' 
-            },
-            { 
-                name: 'Lidocaine', 
-                indications: 'Cardiac arrest (VF/VT), stable VT, IO pain management', 
-                contraindications: 'Hypersensitivity, severe heart block (unless pacemaker present), supraventricular arrhythmias', 
-                dosing: {
-                    'Adult - VF/Pulseless VT': '1 to 1.5 mg/kg IV Push, repeat 0.5-0.75 mg/kg q5-10 min (max 3 mg/kg).',
-                    'Adult - VT with Pulse': '1 to 1.5 mg/kg IV Push, repeat 0.5-0.75 mg/kg until converted (max 3 mg/kg).',
-                    'Adult - IO Pain': '0.5 mg/kg IO (max 40 mg).',
-                    'Pediatric - VF/Pulseless VT': '1 mg/kg IVP over 2-3 min (max 3 mg/kg).',
-                    'Pediatric - IO Pain': '0.5 mg/kg IO (max 20 mg).'
-                }, 
-                route: 'ACP: IV, IO, Spray, ET.' 
-            },
-            { 
-                name: 'LORazepam', 
-                indications: 'Sedation, amnesia, relief of anxiety (SL/PO preferred)', 
-                contraindications: 'Hypersensitivity, acute narrow-angle glaucoma, sleep apnea', 
-                dosing: {
-                    'Adult/Peds >12yrs (<50kg)': '1 mg SL/PO, repeat q4-6h PRN (max 10mg/day).',
-                    'Adult/Peds >12yrs (>50kg)': '1 to 2 mg SL/PO, repeat q4-6h PRN (max 10mg/day).'
-                }, 
-                route: 'ICP (Med Control)/ACP: SL/PO/IM/SubQ/IV.' 
-            },
-            { 
-                name: 'Magnesium Sulfate', 
-                indications: 'Torsades de pointes, eclampsia, severe bronchospasm', 
-                contraindications: 'Hypersensitivity, heart block, myocardial damage', 
-                dosing: {
-                    'Eclampsia': '4 g IV in 100mL NS over 20 min.',
-                    'Torsades (Arrest)': '1 to 2 g IVP diluted in 10mL NS.',
-                    'Torsades (Pulse)': '1 to 2 g IV in 50mL NS over 15 min.',
-                    'Asthma (Adult)': '1 to 2 g IV over 20-30 min.',
-                    'Asthma (Peds)': '25 to 75 mg/kg (max 2g) IV over 20 min.'
-                }, 
-                route: 'ACP: IV/IO.' 
-            },
-            { 
-                name: 'MethylPREDNISolone', 
-                indications: 'Adjunctive for anaphylaxis, bronchospasm (Asthma/COPD), adult croup', 
-                contraindications: 'Hypersensitivity, active tuberculosis, systemic fungal infections', 
-                dosing: {
-                    'Adult': '1 mg/kg IV (max 125 mg) over >2-3 min or infused over 20 min.',
-                    'Pediatric': '1 mg/kg/dose every 6 hrs (max 60 mg/24h).'
-                }, 
-                route: 'ACP: IM/IV/IO.' 
-            },
-            { 
-                name: 'Midazolam', 
-                indications: 'Sedation, seizure control, severe agitation', 
-                contraindications: 'Hypersensitivity, acute pulmonary insufficiency, narrow-angle glaucoma', 
-                dosing: {
-                    'Adult - Seizure': '10 mg IM/IN or 2.5 mg IV q2 min (max 10mg).',
-                    'Adult - Agitation': '2.5-5 mg IM/IV q3-10 min (max 20mg).',
-                    'Pediatric - Seizure': '0.2 mg/kg IM/IN or 0.1 mg/kg IV q10 min (max 10mg).'
-                }, 
-                route: 'ICP (Seizure)/ACP: IM/IV/IO/IN.' 
-            },
-            { 
-                name: 'Morphine', 
-                indications: 'Severe acute or chronic pain', 
-                contraindications: 'Hypersensitivity', 
-                dosing: {
-                    'Adult/Peds': '0.05 to 0.1 mg/kg IV/IM/IN, repeat 0.025-0.05 mg/kg q15 min PRN.',
-                    'Elderly': '0.025 to 0.05 mg/kg IV/IM/IN, repeat 0.01 mg/kg q15 min PRN.'
-                }, 
-                route: 'ACP: IM/IV/IO/SQ.' 
-            },
-            { 
-                name: 'Naloxone', 
-                indications: 'Reversal of narcotic depression, suspected opioid overdose', 
-                contraindications: 'Hypersensitivity', 
-                dosing: {
-                    'Adult/Elderly': '0.5 to 1.0 mg IM/IV/IN every 2-3 min, titrate to adequate ventilations.',
-                    'Pediatric/Neonate': '0.1 mg/kg/dose IM/IV/IN every 2-3 min, titrate. Do not give to neonates in resuscitation immediately post-delivery.'
-                }, 
-                route: 'EMR/PCP/ICP/ACP: IM/IV/IN/SQ.' 
-            },
-            { 
-                name: 'Naproxen', 
-                indications: 'Musculoskeletal trauma, burns, pain management', 
-                contraindications: 'Hypersensitivity to NSAIDs, pregnancy, active GI bleeding', 
-                dosing: {
-                    'Adult/Elderly': '250-500 mg PO, then 250-500 mg q12h or 250mg q6-8h PRN.',
-                    'Peds >50kg': '250 mg PO q8-12h.'
-                }, 
-                route: 'EMR/PCP/ICP/ACP: PO.' 
-            },
-            { 
-                name: 'NitroGLYCERIN', 
-                indications: 'Chest pain of cardiac origin, acute pulmonary edema', 
-                contraindications: 'Hypersensitivity, hypotension, increased ICP, use of phosphodiesterase-5 inhibitors', 
-                dosing: {
-                    'Chest Pain': '0.4 mg SL every 3-5 min (max 3 sprays).',
-                    'Pulmonary Edema (SL)': '0.4 mg SL every 3-5 min until SBP < 140mmHg.',
-                    'Pulmonary Edema (IV)': 'Start 20 mcg/min, titrate by 10 mcg/min q5 min PRN (max 200 mcg/min).'
-                }, 
-                route: 'EMR (Assist)/PCP/ICP/ACP: SL/IV.' 
-            },
-            { 
-                name: 'Norepinephrine', 
-                indications: 'Acute hypotension or shock states', 
-                contraindications: 'Hypersensitivity, suspected mesenteric infarction', 
-                dosing: {
-                    'Adult - IV Infusion': 'Start 0.1 mcg/kg/min, titrate by 0.05 mcg/kg/min to desired BP.'
-                }, 
-                route: 'ACP: IV/IO.' 
-            },
-            { 
-                name: 'Ondansetron', 
-                indications: 'Prevention of nausea and vomiting', 
-                contraindications: 'Hypersensitivity', 
-                dosing: {
-                    'Adult (<65yrs)': '4 mg IV/IM/PO/Buccal q6h.',
-                    'Elderly (>65yrs)': '4 mg IV infusion/IM/PO/Buccal q6h.',
-                    'Peds (<5yrs)': '2 mg IV/IM q6h.',
-                    'Peds (>5yrs)': '4 mg IV/IM/Buccal q6h.'
-                }, 
-                route: 'PCP/ICP/ACP: IM/IV/PO/Buccal.' 
-            },
-            { 
-                name: 'Oxytocin', 
-                indications: 'Control of postpartum hemorrhage', 
-                contraindications: 'Hypersensitivity, major cephalopelvic disproportion, fetal malpresentation', 
-                dosing: {
-                    'Post-Birth (Prophylaxis)': '10 units IM at delivery of anterior shoulder.',
-                    'Postpartum Hemorrhage (PPH)': '10 units IM or 30 units in 500mL IV infusion.'
-                }, 
-                route: 'PCP/ICP/ACP: IM/IV/IO.' 
-            },
-            { 
-                name: 'Salbutamol (Ventolin)', 
-                indications: 'Severe bronchospasm, hyperkalemia', 
-                contraindications: 'Hypersensitivity, tachyarrhythmias', 
-                dosing: {
-                    'Adult - Nebulized': '2.5 to 5.0 mg, may repeat PRN.',
-                    'Adult - MDI': '10 puffs (100mcg/puff).',
-                    'Hyperkalemia': '10 to 20 mg via nebulizer over 10 min.',
-                    'Pediatric - Nebulized': '1.25 to 2.5 mg, may repeat PRN.',
-                    'Pediatric - MDI (>20kg)': '10 puffs.',
-                    'Pediatric - MDI (<20kg)': '5 puffs.'
-                }, 
-                route: 'PCP/ICP/ACP: Nebulized/MDI/ETT.' 
-            },
-            { 
-                name: 'Sodium Bicarbonate', 
-                indications: 'Known TCA overdose or hyperkalemia with QRS widening, hyperkalemic cardiac arrest', 
-                contraindications: 'Metabolic or respiratory alkalosis, hypocalcemia', 
-                dosing: {
-                    'Hyperkalemic Cardiac Arrest': '1 mEq/kg IVP.',
-                    'TCA / Sodium Channel Blocker OD': 'Contact PADIS. 1-2 mEq/kg IV over 1-2 min, repeat q10 min until QRS narrows.'
-                }, 
-                route: 'ACP: IV/IO.' 
-            },
-            { 
-                name: 'Thiamine', 
-                indications: 'Hypoglycemic patients who received D50W and appear malnourished', 
-                contraindications: 'Hypersensitivity', 
-                dosing: {
-                    'Adult': '100 mg IV push over 1 minute.'
-                }, 
-                route: 'ACP: IM/IV/IO.' 
-            },
-            { 
-                name: 'Tranexamic Acid (TXA)', 
-                indications: 'Trauma-associated hemorrhage, postpartum hemorrhage', 
-                contraindications: 'Hypersensitivity, active intravascular clotting, subarachnoid hemorrhage', 
-                dosing: {
-                    'Trauma / PPH': '2 g in 100 mL NS infused IV over 20 minutes.'
-                }, 
-                route: 'ACP: IV/IO.' 
-            },
-        ];
-
-        // --- DOM ELEMENTS & FUNCTIONS ---
-        const mainHeader = document.getElementById('main-header');
-        const azNavWrapper = document.getElementById('az-nav-sticky-wrapper');
-        const medicationListContainer = document.getElementById('medicationList');
-        const searchInput = document.getElementById('searchInput');
-        const noResultsContainer = document.getElementById('noResults');
-        const azNavContainer = document.getElementById('az-nav');
-        
-        function renderMedications(medsToRender) {
-            medicationListContainer.innerHTML = '';
-            
-            if (medsToRender.length === 0 && searchInput.value.length > 0) {
-                noResultsContainer.classList.remove('hidden');
-            } else {
-                noResultsContainer.classList.add('hidden');
-                
-                const groupedMeds = medsToRender.reduce((acc, med) => {
-                    const firstLetter = med.name.charAt(0).toUpperCase();
-                    if (!acc[firstLetter]) acc[firstLetter] = [];
-                    acc[firstLetter].push(med);
-                    return acc;
-                }, {});
-
-                const fragment = document.createDocumentFragment();
-
-                Object.keys(groupedMeds).sort().forEach(letter => {
-                    const heading = document.createElement('div');
-                    heading.id = `letter-${letter}`;
-                    heading.className = 'pt-4';
-                    heading.innerHTML = `<h2 class="text-xl font-bold text-cyan-400 border-b border-slate-700 pb-2 mb-3">${letter}</h2>`;
-                    fragment.appendChild(heading);
-                    
-                    groupedMeds[letter].forEach(med => {
-                        const card = createMedicationCard(med);
-                        fragment.appendChild(card);
-                    });
-                });
-                medicationListContainer.appendChild(fragment);
-            }
-        }
-
-        function createMedicationCard(med) {
-            const div = document.createElement('div');
-            div.className = `bg-slate-800/50 rounded-xl ring-1 ring-slate-700/80 shadow-md overflow-hidden`;
-
-            let contraindicationsHtml;
-            if (med.name === 'Methoxyflurane (Penthrox)' && Array.isArray(med.contraindications)) {
-                contraindicationsHtml = '<ul class="mt-2 space-y-2">';
-                med.contraindications.forEach(c => {
-                    contraindicationsHtml += `
-                        <li class="flex items-center">
-                            <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
-                            <label class="ml-3 text-slate-300 text-sm">${c}</label>
-                        </li>`;
-                });
-                contraindicationsHtml += '</ul>';
-            } else {
-                contraindicationsHtml = `<p class="mt-1 text-slate-300 text-sm leading-relaxed">${med.contraindications}</p>`;
-            }
-            
-            div.innerHTML = `
-                <button class="accordion-header focus-ring w-full p-4 text-left flex justify-between items-center hover:bg-slate-700/50 transition-colors duration-200" aria-expanded="false">
-                    <h3 class="text-md font-semibold text-slate-200">${med.name}</h3>
-                    <svg class="chevron w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                <div class="accordion-content">
-                    <div class="px-4 pb-5 pt-2 border-t border-slate-700/80 space-y-5">
-                        <div class="flex items-start gap-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9999 10.586L16.9497 5.63605L18.3639 7.05026L13.4141 12L18.3639 16.9498L16.9497 18.364L11.9999 13.4142L7.05016 18.364L5.63595 16.9498L10.5857 12L5.63595 7.05026L7.05016 5.63605L11.9999 10.586Z"></path></svg>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Contraindications</h4>
-                                ${contraindicationsHtml}
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.0007 22.0002C6.47784 22.0002 2.00098 17.5233 2.00098 12.0002C2.00098 6.47711 6.47784 1.99999 12.0007 1.99999C17.5236 1.99999 22.0005 6.47711 22.0005 12.0002C22.0005 17.5233 17.5236 22.0002 12.0007 22.0002ZM12.0007 4.00024C7.58247 4.00024 4.00098 7.58172 4.00098 12.0002C4.00098 16.4186 7.58247 20.0002 12.0007 20.0002C16.419 20.0002 20.0005 16.4186 20.0005 12.0002C20.0005 7.58172 16.419 4.00024 12.0007 4.00024ZM11.0007 12.0002V7.00024H13.0007V12.0002H16.0007V14.0002H11.0007V12.0002Z"></path></svg>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dosing</h4>
-                                <div class="dosing-details mt-2 space-y-3"></div>
-                            </div>
-                        </div>
-                         <div class="flex items-start gap-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C15.3137 2 18 4.68629 18 8C18 12.4183 12 22 12 22C12 22 6 12.4183 6 8C6 4.68629 8.68629 2 12 2ZM12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"></path></svg>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Route & Scope</h4>
-                                <p class="mt-1 text-slate-300 text-sm leading-relaxed">${med.route}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11.0026 6L10.9974 12.0026L15.5304 14.4696L16 13.5304L12.0026 11.5V6H11.0026Z"></path></svg>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Indications</h4>
-                                <p class="mt-1 text-slate-300 text-sm leading-relaxed">${med.indications}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            const dosingContainer = div.querySelector('.dosing-details');
-            for (const [indication, dose] of Object.entries(med.dosing)) {
-                const doseElement = document.createElement('div');
-                doseElement.innerHTML = `<p class="text-sm text-slate-300 leading-relaxed"><strong class="font-semibold text-slate-200 block">${indication}:</strong><span>${dose}</span></p>`;
-                dosingContainer.appendChild(doseElement);
-            }
-            return div;
-        }
-
-        function generateAzNav() {
-            const availableLetters = [...new Set(medications.map(med => med.name.charAt(0).toUpperCase()))].sort();
-            
-            azNavContainer.innerHTML = '';
-            
-            availableLetters.forEach(letter => {
-                const button = document.createElement('button');
-                button.dataset.target = `#letter-${letter}`;
-                button.textContent = letter;
-                button.className = 'focus-ring px-3 py-1.5 rounded-md text-sm font-semibold text-slate-300 hover:bg-slate-700 hover:text-cyan-300 transition-colors duration-200';
-                azNavContainer.appendChild(button);
-            });
-        }
-
-        function setAzNavPosition() {
-            const headerHeight = mainHeader.offsetHeight;
-            azNavWrapper.style.top = `${headerHeight}px`;
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        const debouncedRender = debounce(filterAndRender, 250);
-        searchInput.addEventListener('input', debouncedRender);
-
-        function filterAndRender() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            if (searchTerm === '') {
-                renderMedications(medications);
-                return;
-            }
-            const filteredMeds = medications.filter(med => 
-                Object.values(med).some(value => {
-                    if (typeof value === 'object' && value !== null) {
-                        return Object.entries(value).some(([key, val]) => 
-                            String(val).toLowerCase().includes(searchTerm)
-                        );
-                    }
-                    return String(value).toLowerCase().includes(searchTerm);
-                })
-            );
-            renderMedications(filteredMeds);
-        }
-
-        medicationListContainer.addEventListener('click', (e) => {
-            const header = e.target.closest('.accordion-header');
-            if (header) {
-                const content = header.nextElementSibling;
-                const isExpanded = header.getAttribute('aria-expanded') === 'true';
-                header.setAttribute('aria-expanded', !isExpanded);
-                content.classList.toggle('open');
-            }
-        });
-        
-        azNavContainer.addEventListener('click', (e) => {
-            const navButton = e.target.closest('button');
-            if (navButton) {
-                const targetId = navButton.dataset.target;
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderMedications(medications);
-            generateAzNav();
-            setAzNavPosition();
-        });
-
-        const debouncedSetAzNavPosition = debounce(setAzNavPosition, 100);
-        window.addEventListener('resize', debouncedSetAzNavPosition);
-
-    </script>
-</body>
-</html>
+<!DOCTYPE html> <html lang="en" class="scroll-smooth"> <head>     <meta charset="UTF-8">     <meta name="viewport" content="width=device-width, initial-scale=1.0">     <title>Paramedic Medication Field Guide</title>          <link rel="preconnect" href="https://fonts.googleapis.com">     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">          <script src="https://cdn.tailwindcss.com"></script>          <!-- Custom Styles -->     <style>         body {             background-color: #0B1120; /* Darker, richer navy */             color: #94a3b8; /* Lighter slate for better contrast */             font-family: 'Inter', sans-serif;         }         .sticky-header {             position: sticky; top: 0; z-index: 50;             background-color: rgba(11, 17, 32, 0.9); /* Slightly more opaque background */             backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);             border-bottom: 1px solid #1e293b;         }         .accordion-content {             max-height: 0; overflow: hidden;             transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);         }         .accordion-content.open {              max-height: 5000px; /* Increased max-height for long content */         }         .accordion-header svg.chevron {              transition: transform 0.3s ease-in-out;          }         .accordion-header[aria-expanded="true"] svg.chevron {              transform: rotate(180deg);          }                  /* Removed styles that were hiding the scrollbar on the A-Z nav */          /* Focus ring styling */         .focus-ring {             --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);             --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);             box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow);             outline: 2px solid transparent;             outline-offset: 2px;         }         .focus-ring:focus-visible {              --tw-ring-color: rgb(34 211 238 / .7);         }                  /* Modal styles */         .modal-overlay {             transition: opacity 0.3s ease-in-out;         }         .modal-content {             transition: transform 0.3s ease-in-out;         }      </style> </head> <body class="bg-slate-900 text-slate-400">      <!-- Main Container -->     <div class="container mx-auto max-w-5xl">          <!-- Header -->         <header id="main-header" class="sticky-header">             <div class="px-4 pt-4 pb-3 sm:px-6 lg:px-8">                 <div class="flex items-center justify-between gap-4">                      <div class="flex items-center gap-3">                          <div class="flex-shrink-0 bg-cyan-500/10 p-2 rounded-lg">                             <svg class="h-6 w-6 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">                                 <path d="M18.0002 22.0002H6.00024C5.44795 22.0002 5.00024 21.5525 5.00024 21.0002V3.00024C5.00024 2.44795 5.44795 2.00024 6.00024 2.00024H18.0002C18.5525 2.00024 19.0002 2.44795 19.0002 3.00024V21.0002C19.0002 21.5525 18.5525 22.0002 18.0002 22.0002ZM11.0002 12.0002V15.0002H8.00024V17.0002H11.0002V20.0002H13.0002V17.0002H16.0002V15.0002H13.0002V12.0002H11.0002ZM7.00024 4.00024V9.00024H17.0002V4.00024H7.00024Z"></path>                             </svg>                         </div>                         <h1 class="text-lg sm:text-xl font-bold text-slate-100 tracking-tight">Paramedic Field Guide</h1>                     </div>                     <div class="flex items-center gap-2">                         <button id="pumpGuideBtn" class="flex-shrink-0 text-xs bg-slate-700 text-slate-300 font-semibold py-2 px-3 rounded-lg hover:bg-slate-600 hover:text-white transition-colors">                             Pump Guide                         </button>                          <a href="https://collegeofparamedics.sk.ca/professional-practice/protocol-manuals/" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 text-xs bg-cyan-500/10 text-cyan-400 font-semibold py-2 px-3 rounded-lg hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors">                             SCoP Protocols                         </a>                     </div>                 </div>                                  <!-- Search Input -->                 <div class="mt-4 relative">                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">                         <svg class="h-5 w-5 text-slate-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">                             <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />                         </svg>                     </div>                     <input type="text" id="searchInput" placeholder="Search medications..." class="focus-ring block w-full rounded-lg border-0 bg-slate-800 py-3 pl-11 pr-4 text-slate-200 ring-1 ring-inset ring-slate-700 placeholder:text-slate-500 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6">                 </div>             </div>         </header>          <!-- Contact Info -->         <div class="px-4 sm:px-6 lg:px-8 py-3 border-b border-slate-800">             <p class="text-center text-sm text-slate-400">                 For any questions, please contact: <a href="mailto:sean546mc@proton.me" class="font-medium text-cyan-400 hover:text-cyan-300">sean546mc@proton.me</a>             </p>         </div>          <!-- A-Z Quick Navigation -->         <nav id="az-nav-sticky-wrapper" class="bg-slate-800/70 shadow-sm backdrop-blur-lg sticky z-40">             <div id="az-nav" class="flex flex-nowrap justify-start sm:justify-center overflow-x-auto px-4 sm:px-6 lg:px-8 py-2 gap-x-1">                 <!-- A-Z buttons will be generated here by JS -->             </div>         </nav>          <!-- Medication List -->         <main id="medicationList" class="p-4 sm:p-6 lg:p-8 space-y-3">             <!-- Medication cards will be injected here -->         </main>          <!-- No Results Message -->         <div id="noResults" class="hidden text-center py-16 px-6">             <svg class="mx-auto h-12 w-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">               <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />             </svg>             <h3 class="mt-4 text-lg font-semibold text-slate-200">No Medications Found</h3>             <p class="mt-1 text-sm text-slate-400">Your search did not match any medications. Please try again.</p>         </div>      </div>      <!-- Footer with Disclaimer -->     <footer class="border-t border-slate-800 mt-12">         <div class="container mx-auto max-w-5xl py-8 px-4 sm:px-6 lg:px-8 text-center text-slate-500">             <h4 class="font-semibold text-slate-400 mb-2">Legal Disclaimer</h4>             <p class="text-xs max-w-3xl mx-auto leading-relaxed">                 This guide is intended for rapid reference and educational purposes only. It is not a substitute for the official Saskatchewan College of Paramedics (SCoP) Clinical Practice Protocols, medical direction, or professional clinical judgment. The user assumes full responsibility for the accurate administration of any medication. Always refer to the most current official protocols and consult with medical control as required. The developers of this tool are not liable for any errors, omissions, or for any outcomes resulting from the use of this information.             </p>         </div>     </footer>      <!-- General Infusion Instructions Modal -->     <div id="pumpGuideModal" class="fixed inset-0 z-[60] p-4 flex items-center justify-center hidden">         <!-- Overlay -->         <div class="modal-overlay fixed inset-0 bg-black/70 backdrop-blur-sm opacity-0" aria-hidden="true"></div>                  <!-- Content -->         <div class="modal-content relative w-full max-w-2xl bg-slate-800 rounded-xl shadow-2xl ring-1 ring-slate-700 transform scale-95 opacity-0">             <div class="flex items-start justify-between p-4 border-b border-slate-700">                 <h3 class="text-lg font-semibold text-slate-100">General SMART Pump Instructions</h3>                 <button id="closeModalBtn" class="focus-ring p-1 rounded-full text-slate-400 hover:bg-slate-700 hover:text-white transition-colors">                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>                 </button>             </div>             <div class="p-6 space-y-4 text-slate-300 text-sm leading-relaxed">                 <ul id="generalInstructionsList" class="list-disc list-outside space-y-3 pl-5">                     <!-- General instructions will be populated by JS -->                 </ul>             </div>         </div>     </div>       <!-- Embedded JavaScript -->     <script>         // --- DATA STORE ---         const generalPumpInstructions = [             '<strong>Always mix medication into the bag first</strong>. Be careful not to waste medication when priming the line. For example, the line contains 19 mL of fluid, so Epinephrine would take 26.4 minutes to reach the patient at 0.1 mcg/kg/min if the line is not primed with the medication.',             '<strong>Always flush the line at the end of medication delivery at the same rate as the medication</strong> when a flush is needed.',             'If the pump alarms with the message "!!!VTBI Completed Line A! Add More VTBI or Clear Line A", to flush, <strong>switch the empty bag out for a 50 mL mini bag</strong>, choose Line A, enter 20 mL, push START, and press Yes.',             'When selecting a medication, first select <strong>Emergency Adult</strong> or page down twice for Peds *kg range. Then, select Line A using T9 typing (letters on the number pad), and page up or down to locate the correct medication.',             'The <strong>10% rule only applies to continuous infusions (maintenance), not intermittent ones</strong>.'         ];          const medications = [             {                  name: 'Acetaminophen',                  indications: 'Severe sepsis/septic shock (adult), Pyrexic child/adult, Pain control',                  contraindications: 'Hypersensitivity, Acetaminophen-induced liver disease',                  dosing: {                     'Adult': 'Oral: 1 g every 6 hours. Rectal: 325 to 650 mg every 4 to 6 hours.',                     'Elderly (≥75 years)': 'Oral: 500-1000 mg every 6 hours.',                     'Pediatric': 'Oral/Rectal: 10 to 15 mg/kg every 4 to 6 hours (max 75mg/kg/24h, or 4g/24h).'                 },                  route: 'EMR: PO; PCP/ICP/ACP: PO/PR.'              },             {                  name: 'Acetylsalicylic Acid (ASA)',                  indications: 'Ischemic chest pain',                  contraindications: 'Hypersensitivity to ASA/NSAIDs, active ulcer disease (relative)',                  dosing: {                     'Adult/Elderly - Ischemic Chest Pain': '160 mg, uncoated, chewed and swallowed.'                 },                  route: 'EMR/PCP/ICP/ACP: Chew and swallow.'              },             {                  name: 'Activated Charcoal',                  indications: 'Treatment of most oral poisonings (except corrosives, iron, lithium, etc.)',                  contraindications: 'Ingestion of corrosive agents, unprotected airway, GI tract not intact',                  dosing: {                     'Adult/Elderly - Oral Poisoning': '50 grams PO.',                     'Pediatric - Oral Poisoning': 'Contact PADIS (1 g/kg).'                 },                  route: 'EMR/PCP/ICP/ACP: Oral.'              },             {                  name: 'Adenosine',                 indications: 'Conversion of paroxysmal supraventricular tachycardia (PSVT) to sinus rhythm',                  contraindications: '2nd or 3rd degree AV block, sick sinus syndrome, symptomatic bradycardia (unless pacemaker present)',                  dosing: {                     'Adult - PSVT': '1st dose: 6 mg IV over 1-2s w/ rapid 20mL flush. 2nd dose: 12 mg IV over 1-2s w/ rapid 20mL flush if needed.',                     'Pediatric - PSVT': '1st dose: 0.1 mg/kg IV (max 6 mg). 2nd dose: 0.2 mg/kg IV (max 12 mg) if needed.',                     'Special Populations': 'Reduce initial dose to 3mg for patients on carbamazepine/dipyridamole or with central line. Reduce to 1mg for heart transplant patients.'                 },                  route: 'ACP: IV, IO, CVL.'              },             {                  name: 'Amiodarone',                  indications: 'Life-threatening recurring VFib and hemodynamically unstable VT',                  contraindications: 'Hypersensitivity, marked sinus bradycardia, cardiogenic shock, 2nd or 3rd degree AV block (unless pacemaker present)',                  dosing: {                     'Adult - VF/Pulseless VT': '300 mg IV bolus, repeat 150 mg.',                     'Adult - VT with Pulse': '150 mg in 100 mL D5W infused IV over 10 minutes, repeat q10 min PRN.',                     'Pediatric - VF/Pulseless VT': '5 mg/kg IV bolus (max 300 mg/dose). May repeat twice.',                     'Pediatric - VT with Pulse': '150 mg in 100 mL D5W infused IV over 60 min.'                 },                  route: 'ACP: IV, IO, CVAD, IVAD.',                 smartPump: [                     {                         title: 'Loading Dose (150 mg/100 mL D5W)',                         preparation: 'For adults with a pulse.',                         filter: 'A filter set must be attached to the IV pump line.',                         pumpSelection: 'Use the keypad to locate <strong>Amiodarone LOAD (150 mg/100 mL)</strong>.',                         advisory: 'This is a <strong>high alert</strong> medication and requires a <strong>filter</strong>. Select <strong>Continue</strong>.',                         setup: [                             'Set <strong>Duration at 10 minutes</strong>.',                             'Set <strong>VTBI at 100 mL</strong>.',                             'Push <strong>Start – Select Yes</strong>.'                         ],                         flush: 'Flush line with 20 mL NS at the same rate once infusion is completed.'                     },                     {                         title: 'Maintenance Infusion (450 mg/250 mL D5W)',                         filter: 'A filter set must be attached to the IV pump line.',                         pumpSelection: 'Use the keypad to locate <strong>Amiodarone continuous (450 mg/250 mL)</strong>.',                         advisory: 'This is a <strong>high alert</strong> medication and requires a <strong>filter</strong>. Select <strong>Continue</strong>.',                         setup: [                             'Set <strong>Duration to 6 hours</strong>.',                             'Set <strong>dose at 1 mg/min</strong> (the rate will auto-populate at 33.3 mL/hr).',                             'Push <strong>Start – Select Yes</strong>.'                         ]                     }                 ]             },             {                  name: 'Atropine',                  indications: 'Symptomatic Bradycardia, Antidote for organophosphate poisoning',                  contraindications: 'Hypersensitivity, narrow-angle glaucoma, myasthenia gravis (no contraindications in life-threatening poisoning)',                  dosing: {                     'Adult - Symptomatic Bradycardia': '1 mg IV every 3-5 min (max 3 mg).',                     'Pediatric - Symptomatic Bradycardia': '0.02 mg/kg IV (max single dose 0.5 mg).',                     'Adult - Organophosphate Poisoning': '1 to 2 mg; repeat every 5 to 60 minutes as needed. Severe cases: 2 to 6 mg initially.',                     'Pediatric - Organophosphate Poisoning': '<12 years: 0.05 mg/kg IV initially, then double dose q5 min. ≥12 years: 1 mg IV initially, then double dose q5 min.'                 },                  route: 'ACP: IV, IO, ET.'              },             {                  name: 'Calcium Chloride',                  indications: 'Treatment of hypocalcemia (e.g., cardiac arrest with hyperkalemia), sine wave pattern ECG, Beta-blocker/Calcium channel blocker overdose',                  contraindications: 'Hypersensitivity, hypercalcemia, severe renal disease',                  dosing: {                     'Cardiac Arrest / Hyperkalemia': '500 to 1000 mg IV over 2 to 5 minutes, may repeat.',                     'Beta-Blocker / CCB Overdose': 'Contact PADIS. Initial: 1000-2000 mg over 5 min.'                 },                  route: 'ACP: IV, IO, CVL.'              },             {                  name: 'CefTRIAXone',                  indications: 'Infections (lower respiratory, urinary tract, etc.) with >45 min delay to hospital',                  contraindications: 'Hypersensitivity to cephalosporins, do not administer with IV calcium-containing solutions',                  dosing: {                     'Adult/Elderly': '2 g IV over 5 minutes or infused over 20 minutes.'                 },                  route: 'ACP: IV/IO.',                 smartPump: [{                     title: 'Infusion (2 g/50 mL Normal Saline)',                     preparation: [                         '<strong>Remove 20 mL NS from the mini bag</strong>.',                         '<strong>Inject 19.2 mL NS into a 2 g vial of CefTRIAXone and roll to mix</strong>.',                         '<strong>Draw up the 20 mL mixture out of the vial and inject it into the mini bag</strong>.'                     ],                     pumpSelection: 'Use the keypad to select <strong>CefTRIAXone 2000 mg (2000 mg/50 mL)</strong>.',                     setup: [                         'Set <strong>Duration at 20 minutes</strong>.',                         'Set <strong>VTBI at 50 mL</strong>.',                         'Push <strong>Start – Select Yes</strong>.'                     ],                     flush: 'Flush line with 20 mL NS at the same rate once infusion is completed.'                 }]             },             {                 name: 'Methoxyflurane (Penthrox)',                 indications: 'Pain secondary to acute trauma, Pain associated with medical procedures',                 contraindications: [                     'Cardiac instability or respiratory depression',                     'Hypersensitivity',                     'Established diagnosis of malignant hyperthermia',                     'Consciousness (e.g., altered)',                     'Kidneys (signs of renal failure or impairment)',                     'Age < 18 years old',                     'Lung or respiratory impairment',                     'Liver impairment of CYP450 inducers',                     'Last administration (> 6 ml/2 days, 15 ml/7 days or consecutive days)'                 ],                 dosing: {                     'Analgesia': '3 ml q 20 min PRN to MAX of 6 ml',                 },                 route: 'INH'             },             {                  name: 'Dexamethasone',                  indications: 'Pediatric croup (adjunctive treatment)',                  contraindications: 'Hypersensitivity, systemic fungal infections, live virus vaccines',                  dosing: {                     'Pediatric - Croup': '0.6 mg/kg PO to a max of 16 mg.'                 },                  route: 'ACP: PO.'              },             {                  name: 'Dextrose (D10/D25/D50)',                  indications: 'Treatment of insulin hypoglycemia',                  contraindications: 'Hypersensitivity to corn, diabetic coma while hyperglycemic, intracranial hemorrhage',                  dosing: {                     'Adult - Hypoglycemia': '12.5 to 25 grams D10W IV over 1 to 5 minutes. Repeat as required.',                     'Pediatric - Hypoglycemia': '2 to 4 mL/kg D25W IV over 2 to 5 minutes. Repeat as required.',                     'Neonate - Hypoglycemia': '5 to 10 mL/kg D10W IV over 2 to 5 minutes. Repeat as required.'                 },                  route: 'EMR: Oral Glucose; PCP/ICP/ACP: PO/IV/IO.'              },             {                  name: 'DimenhyDRINATE (Gravol)',                  indications: 'Nausea, vomiting, vertigo',                  contraindications: 'Hypersensitivity, concurrent MAOI use, narrow-angle glaucoma, neonates',                  dosing: {                     'Adult': '25 to 50 mg IV/IM every 4 hours PRN.',                     'Elderly': '12.5 mg IV/IM every 4 hours PRN.',                     'Pediatric (<12 years)': '1 mg/kg (max 50 mg) IV/IM every 4-6 hours PRN.'                 },                  route: 'PCP/ICP/ACP: SC/IM/IV.'              },             {                  name: 'DiphenhydrAMINE (Benadryl)',                  indications: 'Allergic symptoms, adjunct in anaphylaxis',                  contraindications: 'Hypersensitivity',                  dosing: {                     'Adult/Pediatric': '1 mg/kg IV infusion or IM (max 50 mg). Recommended daily max: 400mg (Adult), 300mg (Peds).'                 },                  route: 'ACP: IM/IV.',                 smartPump: [{                     title: 'Infusion (1 mg/kg to maximum of 50 mg)',                     applicability: 'For Adults and Pediatrics.',                     pumpSelection: 'Use the keypad to select <strong>DiphenhydrAMINE _mL</strong>.',                     setup: [                         'Set <strong>Container Volume 50 mL</strong>.',                         'Set <strong>Duration at 20 minutes</strong>.',                         'Select <strong>VTBI at 50 mL</strong>.',                         'Push <strong>Start – Select Yes</strong>.'                     ],                     flush: 'Flush line with 20 mL NS at the same rate once infusion is completed.'                 }]             },             {                  name: 'Entonox (Nitrous Oxide)',                  indications: 'Pain (musculoskeletal, cardiac, burns), active labour',                  contraindications: 'Head injury with impaired consciousness, inebriation, severe facial injuries, chest trauma (pneumothorax)',                  dosing: {                     'All Patients': 'Self-administered via inhalation until pain is relieved.'                 },                  route: 'PCP/ICP/ACP: Deep inhalation.'              },             {                  name: 'EPINEPHrine',                  indications: 'Anaphylaxis, asthmatic attacks, cardiac arrest, croup, profound bradycardia/hypotension, push dose pressor.',                  contraindications: 'No absolute contraindications in life-threatening conditions. Hypersensitivity to sulfites.',                  dosing: {                     'Adult - Anaphylaxis (Normotensive)': 'IM: 0.5 mg (1:1000) every 5-15 min PRN (max 3 doses).',                     'Adult - Anaphylaxis (Hypotensive)': 'IV: 100 mcg (10 mL of 1:100,000) over 5-10 min, repeat q5 min PRN.',                     'Adult - Cardiac Arrest': 'IV/IO Push: 1 mg (1:10,000) every 3-5 min. ETT: 3 mg.',                     'Adult - Push Dose Pressor': '5-50 mcg (0.5-5 mL of 1:100,000) IVP every 2-5 min.',                     'Pediatric - Anaphylaxis': 'IM: 0.01 mg/kg (1:1000) (max 0.5 mg/dose), max 3 doses.',                     'Pediatric - Cardiac Arrest': 'IV/IO Push: 0.01 mg/kg (0.1 mL/kg of 1:10,000) every 3-5 min (max 1 mg/dose). ETT: 0.1 mg/kg (0.1 mL/kg of 1:1000).',                     'Pediatric - Croup (Nebulized)': '<5 kg: 0.5 mg/kg (1:1000) (max 2.5 mg). >5 kg: 2.5 to 5 mg (1:1000).',                     'EMR Auto-Injector': 'Adult: 0.3 mg. Peds: 0.15 mg. Repeat in 5 min if needed.'                 },                  route: 'IM, IV, IO, Nebulized, ET, Auto-Injector (EMR only).'              },             {                 name: 'EPINEPHrine Infusion (Adult)',                 alert: 'HIGH ALERT',                 indications: 'Symptomatic bradycardia, Cardiogenic shock, Improve BP to facilitate mechanical capture during transcutaneous pacing (TCP)',                 contraindications: "Hypersensitivity unless it's a life-threatening condition.",                 dosing: {},                 route: 'ACP Infusion',                 smartPump: [{                     title: 'Epinephrine Drip',                     concentration: '4 mg (1 mg/mL) in 250 mL Normal Saline (NS) or D5W, which equals 16 mcg/mL.',                     pumpSelection: 'Use the keypad to select <strong>EPINEPHrine 16 mcg/mL (4 mg/250 mL)</strong>.',                     advisory: 'This is a <strong>high alert</strong> medication requiring a <strong>central line</strong>. Select <strong>Continue</strong>.',                     setup: [                         "Enter the patient's <strong>weight</strong> using the Ideal Body Weight Chart.",                         'Set the <strong>dose at 0.1 mcg/kg/min</strong>.',                         'Set <strong>VTBI at 250 mL</strong>.',                         'Push <strong>Start – Select Yes</strong>.'                     ],                     titration: {                         instruction: 'Titrate up by <strong>0.1 mcg/kg/min to effect every 3 minutes</strong>. To do this:',                         steps: [                             'Press Line A.',                             'Set the new dose (e.g., if current is 0.1 mcg/kg/min, add 0.1 mcg/kg/min to type in 0.2 mcg/kg/min).',                             'Push <strong>Start – Select Yes</strong>.'                         ]                     },                     notes: 'Incompatible with sodium bicarbonate.',                     monitoring: 'Continuous ECG and SpO2 monitoring. Check blood pressure every 3 to 5 minutes. Check vital signs every 15-30 minutes.'                 }]             },             {                  name: 'FentaNYL',                  indications: 'Moderate to severe pain',                  contraindications: 'Hypersensitivity',                  dosing: {                     'Adult - Pain': '0.5 to 2 mcg/kg IV over 1-3 min or IM/IN every 10 min PRN.',                     'Elderly - Pain': '0.5 to 1 mcg/kg IV/IM/IN, repeat 0.25-0.5 mcg/kg q10 min PRN.',                     'Pediatric - Pain': '0.5 to 2 mcg/kg IV over 3-5 min or IM q10 min PRN; or 1.5-2 mcg/kg IN.'                 },                  route: 'ACP: IV, IO, IN, IM, SC.'              },             {                  name: 'Glucagon',                  indications: 'Severe hypoglycemia in patients <4 years or with basal skull fracture without IV access',                  contraindications: 'Hypersensitivity, Pheochromocytoma',                  dosing: {                     'Adult/Peds >12yrs': '1 mg IM/SC. May repeat in 15 min.',                     'Peds <12yrs': '0.1 mg/kg (max 1mg) IM/SC. May repeat in 15 min.',                     'Neonate': '0.2 mg/kg (max 1mg) IM/SC.'                 },                  route: 'PCP/ICP/ACP: IM/SC/IV.'              },             {                  name: 'Haloperidol',                  indications: 'Acute delirium (IM use only)',                  contraindications: 'Hypersensitivity, severe CNS depression, Parkinson\'s syndrome',                  dosing: {                     'Adult (>12 yrs)': '2.5 to 5 mg IM.',                     'Elderly/Debilitated': '1 to 2.5 mg IM.'                 },                  route: 'ACP: IM, SC, IV.'              },             {                  name: 'HYDROmorphone',                  indications: 'Pain management and breathlessness in palliative patients already taking it',                  contraindications: 'Hypersensitivity',                  dosing: {                     'Palliative Use Only': 'Dose varies based on patient\'s existing prescription.'                 },                  route: 'ACP: PO/Subcut/IV.'              },             {                  name: 'Ibuprofen',                  indications: 'Mild to moderate pain, fever (for patients <50 kg)',                  contraindications: 'Hypersensitivity to NSAIDs, active GI bleeding, 3rd trimester pregnancy',                  dosing: {                     'Pediatric (6mo-12yr, <50kg)': '10 mg/kg PO every 6-8 hrs.'                 },                  route: 'EMR/PCP/ICP/ACP: PO.'              },             {                  name: 'Ipratropium',                  indications: 'Bronchospasm (COPD/Asthma exacerbation)',                  contraindications: 'Hypersensitivity to ipratropium or atropine',                  dosing: {                     'Adult - Nebulized': '250 to 500 mcg.',                     'Adult - MDI': '5 puffs (20 mcg/puff).',                     'Pediatric - Nebulized': '125 to 250 mcg.',                     'Pediatric - MDI (>20kg)': '5 puffs.',                     'Pediatric - MDI (<20kg)': '4 puffs.'                 },                  route: 'PCP/ICP/ACP: Inhalation/Nebulized/ETT.'              },             {                  name: 'Ketamine',                  indications: 'Dissociative sedation, secondary for severe pain/agitation, anesthesia',                  contraindications: 'Conditions where significant BP elevation is hazardous (e.g., uncontrolled hypertension)',                  dosing: {                     'Adult/Pediatric - Pain': '0.1 to 0.3 mg/kg IV over >1 min (repeat q10 min) OR 1 mg/kg IN.',                     'Adult - Severe Agitation': '3 to 4 mg/kg IM.'                 },                  route: 'ACP: IM/IN/IV/IO.'              },             {                  name: 'Ketorolac',                  indications: 'Short-term management of moderate to severe pain (IM/IV for patients unable to take oral NSAID)',                  contraindications: 'Hypersensitivity to NSAIDs, active peptic ulcer, renal disease, perioperative pain in CABG',                  dosing: {                     'Adult (<65yrs)': '10-15 mg IM/IV over >15s, then q4-6h. Max 120mg/day.',                     'Adult (>65yrs or <50kg)': '10-15 mg IM/IV over >15s, then lowest effective dose q4-6h. Max 60mg/day.',                     'Pediatric (2-16yrs)': '0.2-0.5 mg/kg IM/IV over 1-5 min q6-8h. Max 10mg q6h.'                 },                  route: 'PCP/ICP/ACP: IM/IV.'              },             {                  name: 'Lidocaine',                  indications: 'Cardiac arrest (VF/VT), stable VT, IO pain management',                  contraindications: 'Hypersensitivity, severe heart block (unless pacemaker present), supraventricular arrhythmias',                  dosing: {                     'Adult - VF/Pulseless VT': '1 to 1.5 mg/kg IV Push, repeat 0.5-0.75 mg/kg q5-10 min (max 3 mg/kg).',                     'Adult - VT with Pulse': '1 to 1.5 mg/kg IV Push, repeat 0.5-0.75 mg/kg until converted (max 3 mg/kg).',                     'Adult - IO Pain': '0.5 mg/kg IO (max 40 mg).',                     'Pediatric - VF/Pulseless VT': '1 mg/kg IVP over 2-3 min (max 3 mg/kg).',                     'Pediatric - IO Pain': '0.5 mg/kg IO (max 20 mg).'                 },                  route: 'ACP: IV, IO, Spray, ET.',                 smartPump: [{                     title: 'Infusion (1 g/250 mL D5W = 4 mg/mL)',                     indications: 'For VT/Wide QRS – NOT in cardiac arrest (post 1 mg/kg loading dose) OR Post ROSC when Lidocaine was the anti-arrhythmic of choice.',                     preparation: 'Use a <strong>Lidocaine pre-mixed 250 mL bag</strong>.',                     advisory: 'This is a <strong>high alert</strong> medication. Select <strong>Continue</strong>.',                     pumpSelection: 'Use the keypad to select <strong>Lidocaine cardiac 1 grams/ 250 mL</strong>.',                     setup: [                         'Enter <strong>dose at 1.0 – 4.0 mg/min</strong> (usually start at 2 mg/min).',                         'Set <strong>VTBI at 250 mL</strong>.',                         'Push <strong>Start – Select Yes</strong>.'                     ],                     flush: 'Flush line with 20 mL NS at the same rate once infusion is complete.'                 }]             },             {                  name: 'LORazepam',                  indications: 'Sedation, amnesia, relief of anxiety (SL/PO preferred)',                  contraindications: 'Hypersensitivity, acute narrow-angle glaucoma, sleep apnea',                  dosing: {                     'Adult/Peds >12yrs (<50kg)': '1 mg SL/PO, repeat q4-6h PRN (max 10mg/day).',                     'Adult/Peds >12yrs (>50kg)': '1 to 2 mg SL/PO, repeat q4-6h PRN (max 10mg/day).'                 },                  route: 'ICP (Med Control)/ACP: SL/PO/IM/SubQ/IV.'              },             {                  name: 'Magnesium Sulfate',                  indications: 'Torsades de pointes, eclampsia, severe bronchospasm',                  contraindications: 'Hypersensitivity, heart block, myocardial damage',                  dosing: {                     'Eclampsia': '4 g IV in 100mL NS over 20 min.',                     'Torsades (Arrest)': '1 to 2 g IVP diluted in 10mL NS.',                     'Torsades (Pulse)': '1 to 2 g IV in 50mL NS over 15 min.',                     'Asthma (Adult)': '1 to 2 g IV over 20-30 min.',                     'Asthma (Peds)': '25 to 75 mg/kg (max 2g) IV over 20 min.'                 },                  route: 'ACP: IV/IO.',                 smartPump: [                     {                         title: 'For Torsade’s de Pointes (not in cardiac arrest): 2 grams/50 mL',                         pumpSelection: 'Use the keypad to select <strong>magnesium</strong>.',                         advisory: 'This is a <strong>high alert</strong> medication. Select <strong>Continue</strong>.',                         setup: [                             'Set <strong>Duration at 15 minutes</strong>.',                             'Set <strong>VTBI at 50 mL</strong>.',                             'Push <strong>Start – Press Yes</strong>.'                         ],                         flush: 'Flush line with 20 mL NS at the same rate once infusion is completed.'                     },                     {                         title: 'For Eclampsia: 4 g/120 mL',                         preparation: '<strong>DO NOT remove mL from bag prior to adding medication</strong>.',                         pumpSelection: 'Select <strong>magnesium EMS obs load 4 grams/120 mL</strong>.',                         advisory: 'This is a <strong>high alert</strong> medication. Select <strong>Continue</strong>.',                         setup: [                             'Set <strong>Duration at 20 minutes</strong>.',                             'Set <strong>VTBI 120 mL</strong>.',                             'Push <strong>Start – Select Yes</strong>.'                         ],                         flush: 'Flush line with 20 mL NS at the same rate once infusion is completed.'                     },                     {                         title: 'For Asthma – Adult: 2 grams/50 mL',                         pumpSelection: 'Use the keypad to select <strong>magnesium</strong>.',                         advisory: 'This is a <strong>high alert</strong> medication. Select <strong>Continue</strong>.',                         setup: [                             'Set <strong>Duration at 20 minutes</strong>.',                             'Set <strong>VTBI at 50 mL</strong>.',                             'Push <strong>Start - Select Yes</strong>.'                         ],                         flush: 'Flush line with 20 mL NS at the same rate once infusion is completed.'                     },                     {                         title: 'For Asthma – Pediatric: 50 mg/kg',                         notes: 'Pediatric Magnesium Sulfate is supplied as 200 mg/mL.',                         preparation: 'Using the provided chart, <strong>draw up the correct mL and put into a 50 mL bag</strong>. Dosing follows Broselow Tape Epi dosing for multi-weight categories.',                         pumpSelection: [                             'Select <strong>Appropriate Pediatric CCA – Weight based</strong>.',                             'Use keypad to find <strong>No Drug Selected</strong>.',                             'Page down to <strong>mg/kg – Choose – arrow down to mg – choose</strong>.'                         ],                         setup: [                             'Enter <strong>concentration</strong> (e.g., a 15 kg patient x 75 mg/kg = 1125 mg if calculating, or 1237.5 mg if using the chart).',                             'Enter <strong>50 mL</strong>.',                             'Select <strong>weight in kg</strong>.',                             'Scroll to time - enter <strong>20 minutes</strong>.',                             'Scroll back to VTBI enter <strong>50 mL</strong>.',                             'Press <strong>Start – Select Yes</strong>.'                         ],                         flush: 'Flush line with 20 mL with NS at the same rate once infusion is complete.',                         importantNote: 'When "No Drug Selected" is used, you <strong>must complete an incident report</strong> stating NDS was used and <strong>fill out an online change request form</strong> on the SMART Pump Website.',                         pedsChart: {                             '5 kg': '250 mg / <strong>1.25 mL</strong>', '6-7 kg': '325 mg / <strong>1.6 mL</strong>', '8-9 kg': '425 mg / <strong>2.1 mL</strong>', '10-11 kg': '500 mg / <strong>2.5 mL</strong>', '12-14 kg': '650 mg / <strong>3.25 mL</strong>', '15-18 kg': '850 mg / <strong>4.25 mL</strong>', '19-22 kg': '1050 mg / <strong>5.25 mL</strong>', '24-28 kg': '1350 mg / <strong>6.75 mL</strong>', '30-36 kg': '1650 mg / <strong>8.2 mL</strong>'                         },                         resourceNote: 'PediSTAT is another accepted and encouraged Pediatric Resource.'                     }                 ]             },             {                  name: 'MethylPREDNISolone',                  indications: 'Adjunctive for anaphylaxis, bronchospasm (Asthma/COPD), adult croup',                  contraindications: 'Hypersensitivity, active tuberculosis, systemic fungal infections',                  dosing: {                     'Adult': '1 mg/kg IV (max 125 mg) over >2-3 min or infused over 20 min.',                     'Pediatric': '1 mg/kg/dose every 6 hrs (max 60 mg/24h).'                 },                  route: 'ACP: IM/IV/IO.',                 smartPump: [{                     title: 'Loading Dose (1 mg/kg in 50 mL)',                     applicability: 'For Adults and Pediatrics.',                     pumpSelection: 'Use the keypad to select <strong>MethylPREDNISolone _mg/_mL</strong>.',                     setup: [                         'Choose <strong>1 - 499 mg</strong>.',                         'Set <strong>concentration</strong> (e.g., 62.5 mg or 125 mg).',                         'Set <strong>50 mL</strong>.',                         'Set <strong>Duration at 20 minutes</strong>.',                         'Set <strong>VTBI 50 mL</strong>.',                         'Push <strong>Start – Select Yes</strong>.'                     ],                     flush: 'Flush line with 20 mL NS at the same rate once infusion is completed.'                 }]             },             {                  name: 'Midazolam',                  indications: 'Sedation, seizure control, severe agitation',                  contraindications: 'Hypersensitivity, acute pulmonary insufficiency, narrow-angle glaucoma',                  dosing: {                     'Adult - Seizure': '10 mg IM/IN or 2.5 mg IV q2 min (max 10mg).',                     'Adult - Agitation': '2.5-5 mg IM/IV q3-10 min (max 20mg).',                     'Pediatric - Seizure': '0.2 mg/kg IM/IN or 0.1 mg/kg IV q10 min (max 10mg).'                 },                  route: 'ICP (Seizure)/ACP: IM/IV/IO/IN.'              },             {                  name: 'Morphine',                  indications: 'Severe acute or chronic pain',                  contraindications: 'Hypersensitivity',                  dosing: {                     'Adult/Peds': '0.05 to 0.1 mg/kg IV/IM/IN, repeat 0.025-0.05 mg/kg q15 min PRN.',                     'Elderly': '0.025 to 0.05 mg/kg IV/IM/IN, repeat 0.01 mg/kg q15 min PRN.'                 },                  route: 'ACP: IM/IV/IO/SQ.'              },             {                  name: 'Naloxone',                  indications: 'Reversal of narcotic depression, suspected opioid overdose',                  contraindications: 'Hypersensitivity',                  dosing: {                     'Adult/Elderly': '0.5 to 1.0 mg IM/IV/IN every 2-3 min, titrate to adequate ventilations.',                     'Pediatric/Neonate': '0.1 mg/kg/dose IM/IV/IN every 2-3 min, titrate. Do not give to neonates in resuscitation immediately post-delivery.'                 },                  route: 'EMR/PCP/ICP/ACP: IM/IV/IN/SQ.'              },             {                  name: 'Naproxen',                  indications: 'Musculoskeletal trauma, burns, pain management',                  contraindications: 'Hypersensitivity to NSAIDs, pregnancy, active GI bleeding',                  dosing: {                     'Adult/Elderly': '250-500 mg PO, then 250-500 mg q12h or 250mg q6-8h PRN.',                     'Peds >50kg': '250 mg PO q8-12h.'                 },                  route: 'EMR/PCP/ICP/ACP: PO.'              },             {                  name: 'NitroGLYCERIN',                  indications: 'Chest pain of cardiac origin, acute pulmonary edema',                  contraindications: 'Hypersensitivity, hypotension, increased ICP, use of phosphodiesterase-5 inhibitors',                  dosing: {                     'Chest Pain': '0.4 mg SL every 3-5 min (max 3 sprays).',                     'Pulmonary Edema (SL)': '0.4 mg SL every 3-5 min until SBP < 140mmHg.',                     'Pulmonary Edema (IV)': 'Start 20 mcg/min, titrate by 10 mcg/min q5 min PRN (max 200 mcg/min).'                 },                  route: 'EMR (Assist)/PCP/ICP/ACP: SL/IV.',                 smartPump: [{                     title: 'Infusion for Hypertensive Pulmonary Edema (SCAPE)',                     preparation: '<strong>Mix 50 mg in 250 mL D5W or NS</strong>.',                     pumpSelection: 'Use the keypad to select <strong>NitroGLYCERIN 50 mg/250 mL</strong>.',                     advisory: 'This is a <strong>high alert</strong> medication. Select <strong>Continue</strong>.',                     setup: [                         'Set <strong>dose 20 mcg/min</strong>.',                         'Set <strong>VTBI 250 mL</strong>.',                         'Press <strong>START – Select YES</strong>.'                     ],                     titration: {                         instruction: 'Titrate up by <strong>10 mcg/min every 5 minutes to a maximum of 200 mcg/min</strong>. To do this:',                         steps: [                             'Press Line A.',                             'Set the new dose (e.g., if current is 20 mcg/min and you want to increase by 10 mcg/min, input 30 mcg/min).',                             'Push <strong>START – Press Yes</strong>.'                         ]                     }                 }]             },             {                  name: 'Norepinephrine',                  indications: 'Acute hypotension or shock states',                  contraindications: 'Hypersensitivity, suspected mesenteric infarction',                  dosing: {                     'Adult - IV Infusion': 'Start 0.1 mcg/kg/min, titrate by 0.05 mcg/kg/min to desired BP.'                 },                  route: 'ACP: IV/IO.',                 smartPump: [{                     title: 'Norepi Drip (16 mg/250 mL NS or D5W = 64 mcg/mL)',                     notes: 'The 10% rule does not apply; the medication <strong>must have a total volume of 250 mL</strong>.',                     pumpSelection: 'Use the keypad to select <strong>Norepinephrine 64 mcg/mL (16 mg/250 mL)</strong>.',                     advisory: 'This is a <strong>high alert</strong> medication requiring a <strong>central line</strong>. Select <strong>Continue</strong>.',                     setup: [                         "Enter the patient's <strong>weight</strong>.",                         'Set the <strong>dose at 0.1 mcg/kg/min</strong>.',                         'Set <strong>VTBI at 250 mLs</strong>.',                         'Push <strong>Start – Select Yes</strong>.'                     ],                     titration: {                         instruction: 'Titrate at <strong>0.1 mcg/kg/min to effect every 3 minutes</strong>. To do this:',                         steps: [                             'Press Line A.',                             'Set the new dose (e.g., if current is 0.1 mcg/kg/min, add 0.1 mcg/kg/min to type in 0.2 mcg/kg/min).',                             'Push <strong>Start – Press Yes</strong>.'                         ]                     }                 }]             },             {                  name: 'Ondansetron',                  indications: 'Prevention of nausea and vomiting',                  contraindications: 'Hypersensitivity',                  dosing: {                     'Adult (<65yrs)': '4 mg IV/IM/PO/Buccal q6h.',                     'Elderly (>65yrs)': '4 mg IV infusion/IM/PO/Buccal q6h.',                     'Peds (<5yrs)': '2 mg IV/IM q6h.',                     'Peds (>5yrs)': '4 mg IV/IM/Buccal q6h.'                 },                  route: 'PCP/ICP/ACP: IM/IV/PO/Buccal.',                 smartPump: [{                     title: 'Infusion (4-8 mg/50 mL NS)',                     notes: '<strong>Should be using 4 mg to start</strong>.',                     applicability: 'For age greater than 65 years.',                     pumpSelection: 'Use the keypad to select <strong>Ondansetron 50 mL</strong>.',                     setup: [                         'Set <strong>Duration at 20 minutes</strong>.',                         'Set <strong>VTBI at 50 mL</strong>.',                         'Push <strong>Start – Select Yes</strong>.'                     ],                     flush: 'Flush line with 20 mL NS at the same rate once infusion is completed.'                 }]             },             {                  name: 'Oxytocin',                  indications: 'Control of postpartum hemorrhage',                  contraindications: 'Hypersensitivity, major cephalopelvic disproportion, fetal malpresentation',                  dosing: {                     'Post-Birth (Prophylaxis)': '10 units IM at delivery of anterior shoulder.',                     'Postpartum Hemorrhage (PPH)': '10 units IM or 30 units in 500mL IV infusion.'                 },                  route: 'PCP/ICP/ACP: IM/IV/IO.',                 smartPump: [{                     title: 'Infusion (30 units/500 mL NS or LR = 60 mUnits/mL)',                     indications: 'For Post-Partum Hemorrhage post-delivery, in addition to an initial IM dose of 10 units. Administer 30 units in 500 mL NS or RL IV infusion at 125-250 units/min.',                     pumpSelection: 'Select <strong>Oxytocin 30 units/500 mL</strong>.',                     advisory: 'This is a <strong>high alert</strong> and <strong>HAZARDOUS</strong> medication. Select <strong>Continue</strong>.',                     setup: [                         'Enter <strong>125 to 250 mUnits/min</strong> (should be 250 if using for PPH).',                         'Enter <strong>500 mL</strong>.',                         'Push <strong>START</strong>.',                         '<strong>Override Soft Limit – Select Yes</strong>.',                         '<strong>Start delivery - Select Yes</strong>.'                     ],                     flush: 'Flush line with 20 mL NS at the same rate once infusion is completed.',                     documentation: '<strong>Document the Override Soft Limit on the PCR</strong>.'                 }]             },             {                  name: 'Salbutamol (Ventolin)',                  indications: 'Severe bronchospasm, hyperkalemia',                  contraindications: 'Hypersensitivity, tachyarrhythmias',                  dosing: {                     'Adult - Nebulized': '2.5 to 5.0 mg, may repeat PRN.',                     'Adult - MDI': '10 puffs (100mcg/puff).',                     'Hyperkalemia': '10 to 20 mg via nebulizer over 10 min.',                     'Pediatric - Nebulized': '1.25 to 2.5 mg, may repeat PRN.',                     'Pediatric - MDI (>20kg)': '10 puffs.',                     'Pediatric - MDI (<20kg)': '5 puffs.'                 },                  route: 'PCP/ICP/ACP: Nebulized/MDI/ETT.'              },             {                  name: 'Sodium Bicarbonate',                  indications: 'Known TCA overdose or hyperkalemia with QRS widening, hyperkalemic cardiac arrest',                  contraindications: 'Metabolic or respiratory alkalosis, hypocalcemia',                  dosing: {                     'Hyperkalemic Cardiac Arrest': '1 mEq/kg IVP.',                     'TCA / Sodium Channel Blocker OD': 'Contact PADIS. 1-2 mEq/kg IV over 1-2 min, repeat q10 min until QRS narrows.'                 },                  route: 'ACP: IV/IO.'              },             {                  name: 'Thiamine',                  indications: 'Hypoglycemic patients who received D50W and appear malnourished',                  contraindications: 'Hypersensitivity',                  dosing: {                     'Adult': '100 mg IV push over 1 minute.'                 },                  route: 'ACP: IM/IV/IO.'              },             {                  name: 'Tranexamic Acid (TXA)',                  indications: 'Trauma-associated hemorrhage, postpartum hemorrhage',                  contraindications: 'Hypersensitivity, active intravascular clotting, subarachnoid hemorrhage',                  dosing: {                     'Trauma / PPH': '2 g in 100 mL NS infused IV over 20 minutes.'                 },                  route: 'ACP: IV/IO.',                 smartPump: [{                     title: 'Infusion (for Trauma OR Post-partum severe hemorrhage)',                     preparation: [                         '<strong>Remove 20 mL from the 100 mL bag before adding TXA</strong>.',                         '<strong>Add 2 g TXA to the 100 mL bag then prime the pump set</strong>.'                     ],                     pumpSelection: 'Use the keypad to select <strong>Tranexamic Acid _mg/_mL</strong>.',                     setup: [                         'Enter <strong>concentration 2000 mg</strong>.',                         'Enter <strong>volume 100 mL</strong>.',                         'Enter <strong>Duration 20 min</strong>.',                         'Enter <strong>VTBI 100 mL</strong>.',                         'Push <strong>Start – Select Yes</strong>.'                     ],                     flush: 'Flush line with 20 mL NS at the same rate once infusion is complete.'                 }]             },         ];          // --- DOM ELEMENTS & FUNCTIONS ---         const mainHeader = document.getElementById('main-header');         const azNavWrapper = document.getElementById('az-nav-sticky-wrapper');         const medicationListContainer = document.getElementById('medicationList');         const searchInput = document.getElementById('searchInput');         const noResultsContainer = document.getElementById('noResults');         const azNavContainer = document.getElementById('az-nav');         const pumpGuideBtn = document.getElementById('pumpGuideBtn');         const pumpGuideModal = document.getElementById('pumpGuideModal');         const closeModalBtn = document.getElementById('closeModalBtn');         const modalOverlay = pumpGuideModal.querySelector('.modal-overlay');         const generalInstructionsList = document.getElementById('generalInstructionsList');                  function renderMedications(medsToRender) {             medicationListContainer.innerHTML = '';                          if (medsToRender.length === 0 && searchInput.value.length > 0) {                 noResultsContainer.classList.remove('hidden');             } else {                 noResultsContainer.classList.add('hidden');                                  const groupedMeds = medsToRender.reduce((acc, med) => {                     const firstLetter = med.name.charAt(0).toUpperCase();                     if (!acc[firstLetter]) acc[firstLetter] = [];                     acc[firstLetter].push(med);                     return acc;                 }, {});                  const fragment = document.createDocumentFragment();                  Object.keys(groupedMeds).sort().forEach(letter => {                     const heading = document.createElement('div');                     heading.id = `letter-${letter}`;                     heading.className = 'pt-4';                     heading.innerHTML = `<h2 class="text-xl font-bold text-cyan-400 border-b border-slate-700 pb-2 mb-3">${letter}</h2>`;                     fragment.appendChild(heading);                                          groupedMeds[letter].forEach(med => {                         const card = createMedicationCard(med);                         fragment.appendChild(card);                     });                 });                 medicationListContainer.appendChild(fragment);             }         }          function createSmartPumpSection(pumpInfo) {             let pumpHtml = `                 <div class="mt-5 pt-5 border-t border-slate-700/80">                     <div class="flex items-start gap-x-4">                         <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">                            <svg class="w-5 h-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18 18V20H6V18H4V12H6V6H9V4H15V6H18V12H20V18H18ZM8 12V18H16V12H8ZM16 8V10H8V8H16Z"></path></svg>                         </div>                         <div>                             <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">SMART Pump Infusion</h4>                             <div class="mt-2 space-y-6">`;                          pumpInfo.forEach(scenario => {                 pumpHtml += `<div class="p-3 bg-slate-900/50 rounded-lg ring-1 ring-slate-700">`;                 pumpHtml += `<h5 class="font-semibold text-slate-200 text-sm mb-2">${scenario.title}</h5>`;                                  const createList = (items) => Array.isArray(items) ? `<ul>${items.map(item => `<li class="list-disc list-outside ml-4">${item}</li>`).join('')}</ul>` : `<p>${items}</p>`;                                  if(scenario.applicability) pumpHtml += `<p class="text-xs italic text-slate-400 mb-2">${scenario.applicability}</p>`;                 if(scenario.notes) pumpHtml += `<p class="text-sm text-slate-300 mb-2">${scenario.notes}</p>`;                 if(scenario.indications) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Indications:</strong><p class="text-sm text-slate-300">${scenario.indications}</p></div>`;                 if(scenario.concentration) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Concentration:</strong><p class="text-sm text-slate-300">${scenario.concentration}</p></div>`;                 if(scenario.preparation) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Preparation:</strong><div class="text-sm text-slate-300">${createList(scenario.preparation)}</div></div>`;                 if(scenario.filter) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Filter:</strong><p class="text-sm text-slate-300">${scenario.filter}</p></div>`;                 if(scenario.advisory) pumpHtml += `<div class="my-2 p-2 text-sm bg-yellow-500/10 text-yellow-400 rounded-md ring-1 ring-yellow-500/20">${scenario.advisory}</div>`;                 if(scenario.pumpSelection) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Pump Selection:</strong><div class="text-sm text-slate-300">${createList(scenario.pumpSelection)}</div></div>`;                 if(scenario.setup) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Initial Setup:</strong><div class="text-sm text-slate-300">${createList(scenario.setup)}</div></div>`;                 if(scenario.titration) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Titration:</strong><p class="text-sm text-slate-300">${scenario.titration.instruction}</p><div class="text-sm text-slate-300">${createList(scenario.titration.steps)}</div></div>`;                 if(scenario.flush) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Flush:</strong><p class="text-sm text-slate-300">${scenario.flush}</p></div>`;                 if(scenario.documentation) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Documentation:</strong><p class="text-sm text-slate-300">${scenario.documentation}</p></div>`;                 if(scenario.monitoring) pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Monitoring:</strong><p class="text-sm text-slate-300">${scenario.monitoring}</p></div>`;                 if(scenario.importantNote) pumpHtml += `<div class="my-2 p-2 text-sm bg-red-500/10 text-red-400 rounded-md ring-1 ring-red-500/20">${scenario.importantNote}</div>`;                 if(scenario.pedsChart) {                     pumpHtml += `<div class="mb-2"><strong class="block text-xs text-slate-400">Pediatric Dosing Chart:</strong><div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 mt-1 text-xs text-slate-300">`;                     for(const [key, value] of Object.entries(scenario.pedsChart)) {                         pumpHtml += `<div><strong>${key}:</strong> ${value}</div>`;                     }                     pumpHtml += `</div></div>`;                 }                 if(scenario.resourceNote) pumpHtml += `<p class="text-xs italic text-slate-400 mt-2">${scenario.resourceNote}</p>`;                  pumpHtml += `</div>`;             });              pumpHtml += `</div></div></div></div>`;             return pumpHtml;         }           function createMedicationCard(med) {             const div = document.createElement('div');             div.className = `bg-slate-800/50 rounded-xl ring-1 ring-slate-700/80 shadow-md overflow-hidden`;              let contraindicationsHtml;             if (med.name === 'Methoxyflurane (Penthrox)' && Array.isArray(med.contraindications)) {                 contraindicationsHtml = '<ul class="mt-2 space-y-2">';                 med.contraindications.forEach(c => {                     contraindicationsHtml += `                         <li class="flex items-center">                             <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 bg-slate-700">                             <label class="ml-3 text-slate-300 text-sm">${c}</label>                         </li>`;                 });                 contraindicationsHtml += '</ul>';             } else {                 contraindicationsHtml = `<p class="mt-1 text-slate-300 text-sm leading-relaxed">${med.contraindications}</p>`;             }                          const baseInfoHtml = `                 <div class="flex items-start gap-x-4">                     <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">                         <svg class="w-5 h-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9999 10.586L16.9497 5.63605L18.3639 7.05026L13.4141 12L18.3639 16.9498L16.9497 18.364L11.9999 13.4142L7.05016 18.364L5.63595 16.9498L10.5857 12L5.63595 7.05026L7.05016 5.63605L11.9999 10.586Z"></path></svg>                     </div>                     <div>                         <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Contraindications</h4>                         ${contraindicationsHtml}                     </div>                 </div>                 <div class="flex items-start gap-x-4">                     <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">                         <svg class="w-5 h-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.0007 22.0002C6.47784 22.0002 2.00098 17.5233 2.00098 12.0002C2.00098 6.47711 6.47784 1.99999 12.0007 1.99999C17.5236 1.99999 22.0005 6.47711 22.0005 12.0002C22.0005 17.5233 17.5236 22.0002 12.0007 22.0002ZM12.0007 4.00024C7.58247 4.00024 4.00098 7.58172 4.00098 12.0002C4.00098 16.4186 7.58247 20.0002 12.0007 20.0002C16.419 20.0002 20.0005 16.4186 20.0005 12.0002C20.0005 7.58172 16.419 4.00024 12.0007 4.00024ZM11.0007 12.0002V7.00024H13.0007V12.0002H16.0007V14.0002H11.0007V12.0002Z"></path></svg>                     </div>                     <div>                         <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dosing</h4>                         <div class="dosing-details mt-2 space-y-3"></div>                     </div>                 </div>                  <div class="flex items-start gap-x-4">                     <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">                         <svg class="w-5 h-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C15.3137 2 18 4.68629 18 8C18 12.4183 12 22 12 22C12 22 6 12.4183 6 8C6 4.68629 8.68629 2 12 2ZM12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"></path></svg>                     </div>                     <div>                         <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Route & Scope</h4>                         <p class="mt-1 text-slate-300 text-sm leading-relaxed">${med.route}</p>                     </div>                 </div>                 <div class="flex items-start gap-x-4">                     <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">                         <svg class="w-5 h-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11.0026 6L10.9974 12.0026L15.5304 14.4696L16 13.5304L12.0026 11.5V6H11.0026Z"></path></svg>                     </div>                     <div>                         <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Indications</h4>                         <p class="mt-1 text-slate-300 text-sm leading-relaxed">${med.indications}</p>                     </div>                 </div>             `;              const smartPumpHtml = med.smartPump ? createSmartPumpSection(med.smartPump) : '';              div.innerHTML = `                 <button class="accordion-header focus-ring w-full p-4 text-left flex justify-between items-center hover:bg-slate-700/50 transition-colors duration-200" aria-expanded="false">                     <h3 class="text-md font-semibold text-slate-200">${med.name}</h3>                     <svg class="chevron w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>                 </button>                 <div class="accordion-content">                     <div class="px-4 pb-5 pt-2 border-t border-slate-700/80 space-y-5">                         ${baseInfoHtml}                         ${smartPumpHtml}                     </div>                 </div>             `;             const dosingContainer = div.querySelector('.dosing-details');             for (const [indication, dose] of Object.entries(med.dosing)) {                 const doseElement = document.createElement('div');                 doseElement.innerHTML = `<p class="text-sm text-slate-300 leading-relaxed"><strong class="font-semibold text-slate-200 block">${indication}:</strong><span>${dose}</span></p>`;                 dosingContainer.appendChild(doseElement);             }             return div;         }          function generateAzNav() {             const availableLetters = [...new Set(medications.map(med => med.name.charAt(0).toUpperCase()))].sort();                          azNavContainer.innerHTML = '';                          availableLetters.forEach(letter => {                 const button = document.createElement('button');                 button.dataset.target = `#letter-${letter}`;                 button.textContent = letter;                 button.className = 'focus-ring px-3 py-1.5 rounded-md text-sm font-semibold text-slate-300 hover:bg-slate-700 hover:text-cyan-300 transition-colors duration-200';                 azNavContainer.appendChild(button);             });         }          function setAzNavPosition() {             const headerHeight = mainHeader.offsetHeight;             azNavWrapper.style.top = `${headerHeight}px`;         }          function debounce(func, wait) {             let timeout;             return function executedFunction(...args) {                 const later = () => {                     clearTimeout(timeout);                     func(...args);                 };                 clearTimeout(timeout);                 timeout = setTimeout(later, wait);             };         }          const debouncedRender = debounce(filterAndRender, 250);         searchInput.addEventListener('input', debouncedRender);          function filterAndRender() {             const searchTerm = searchInput.value.toLowerCase().trim();             if (searchTerm === '') {                 renderMedications(medications);                 return;             }             const filteredMeds = medications.filter(med =>                  JSON.stringify(med).toLowerCase().includes(searchTerm)             );             renderMedications(filteredMeds);         }          medicationListContainer.addEventListener('click', (e) => {             const header = e.target.closest('.accordion-header');             if (header) {                 const content = header.nextElementSibling;                 const isExpanded = header.getAttribute('aria-expanded') === 'true';                 header.setAttribute('aria-expanded', !isExpanded);                 content.classList.toggle('open');             }         });                  azNavContainer.addEventListener('click', (e) => {             const navButton = e.target.closest('button');             if (navButton) {                 const targetId = navButton.dataset.target;                 const targetElement = document.querySelector(targetId);                 if (targetElement) {                     const offset = mainHeader.offsetHeight + azNavWrapper.offsetHeight;                     const elementPosition = targetElement.getBoundingClientRect().top;                     const offsetPosition = elementPosition + window.pageYOffset - offset;                              window.scrollTo({                         top: offsetPosition,                         behavior: "smooth"                     });                 }             }         });          // --- Modal Logic ---         function openModal() {             pumpGuideModal.classList.remove('hidden');             document.body.style.overflow = 'hidden'; // Prevent background scrolling             requestAnimationFrame(() => {                 modalOverlay.classList.remove('opacity-0');                 pumpGuideModal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0');             });         }          function closeModal() {             modalOverlay.classList.add('opacity-0');             pumpGuideModal.querySelector('.modal-content').classList.add('scale-95', 'opacity-0');             setTimeout(() => {                 pumpGuideModal.classList.add('hidden');                 document.body.style.overflow = '';             }, 300); // Match transition duration         }                  pumpGuideBtn.addEventListener('click', openModal);         closeModalBtn.addEventListener('click', closeModal);         modalOverlay.addEventListener('click', closeModal);         document.addEventListener('keydown', (e) => {             if (e.key === 'Escape' && !pumpGuideModal.classList.contains('hidden')) {                 closeModal();             }         });           document.addEventListener('DOMContentLoaded', () => {             // Populate general instructions             generalInstructionsList.innerHTML = generalPumpInstructions.map(item => `<li>${item}</li>`).join('');                          medications.sort((a, b) => a.name.localeCompare(b.name));             renderMedications(medications);             generateAzNav();             setAzNavPosition();         });          const debouncedSetAzNavPosition = debounce(setAzNavPosition, 100);         window.addEventListener('resize', debouncedSetAzNavPosition);      </script> </body> </html> 
